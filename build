@@ -1,0 +1,3 @@
+mono /usr/local/bin/Brass.exe main.asm biggoil.p
+cp biggoil.p zxpandsdcard/menu.p
+cp biggoil.p.sym zxpandsdcard/menu.p.sym
