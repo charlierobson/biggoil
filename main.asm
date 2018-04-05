@@ -41,6 +41,17 @@ PRTBUF  .fill   32,0
 prbend  .byte   $76 
 membot  .fill   32,0
 
+UP = 0
+RIGHT = 1
+DOWN = 2
+LEFT = 4
+
+PIPE_VERT = $85
+PIPE_HORIZ = $03
+
+PIPE_HEAD = $34 ; 'O'
+DOT = $1b       ; '.'
+
 ;-------------------------------------------------------------------------------
 
 line1:  .byte   0,1
@@ -56,15 +67,149 @@ line1:  .byte   0,1
         ld      bc,24*33+1
         ldir
 
-        ld      hl,dfile+$d8
+        ld      hl,dfile+$b7
         ld      (playerpos),hl
+        ld      a,DOWN
+        ld      (playerdirn),a
 
 -:      call    framesync
+        ld      a,(frames)
+        and     3
+        cp      3
+        jr      nz,{-}
 
-        ld      a,(down)
+        call    readinput
+
+        ld      a,(fire)
         cp      1
-        call    z,playerdown
+        jr      nz,{+}
+
+        call    startretract
         jr      {-}
+
++:      and     1
+        jr      z,{+}
+
+        call    retract
+        jr      {-}
+
++:      call    tryup
+        jr      z,{-}
+
+        call    trydown
+        jr      z,{-}
+
+        call    tryleft
+        jr      z,{-}
+
+        call    tryright
+        jr      {-}
+
+;-------------------------------------------------------------------------------
+
+startretract:
+        ld      a,(playerdirn)
+        and     a
+        rlca
+        or      reversetab & 255
+        ld      l,a
+        ld      h,reversetab / 256
+        ld      a,(hl)
+        inc     hl
+        ld      d,(hl)
+        ld      e,a
+        ld      hl,(playerpos)
+        ld      (hl),0
+        add     hl,de
+        ld      (playerpos),hl
+        ld      (hl),PIPE_HEAD
+        ret
+
+
+retract:
+        ret
+
+
+tryup:
+        ld      a,(up)
+        ld      de,-33
+        ld      c,UP
+        jr      doturn
+
+tryright:
+        ld      a,(right)
+        ld      de,1
+        ld      c,RIGHT
+        jr      doturn
+
+trydown:
+        ld      a,(down)
+        ld      de,33
+        ld      c,DOWN
+        jr      doturn
+
+tryleft:
+        ld      a,(left)
+        ld      de,-1
+        ld      c,LEFT
+
+doturn:
+        and     1
+        jr      nz,{+}
+
+        or      $ff
+        ret
+
++:      ld      hl,(playerpos)
+        ld      (oldplayerpos),hl
+        add     hl,de
+        ld      a,(hl)
+        cp      0
+        jr      z,{+}
+
+        cp      DOT
+        ret     nz
+
++:      ld      (hl),PIPE_HEAD
+        ld      (playerpos),hl
+        ld      a,(playerdirn)
+        and     a
+        rlca
+        rlca
+        rlca
+        ld      b,a
+        ld      a,c
+        ld      (playerdirn),a
+        or      b
+        or      turntable & 255
+        ld      e,a
+        ld      d,turntable / 256
+        ld      a,(de)
+        ld      hl,(oldplayerpos)
+        ld      (hl),a
+        xor     a
+        ret
+
+playerpos:
+        .word   0
+
+oldplayerpos:
+        .word   0
+
+playerdirn:
+        .word   0
+
+        .align  64
+turntable:
+        .byte   $85,$85,$00,$00,$84,$00,$00,$00
+        .byte   $03,$03,$84,$00,$00,$00,$00,$00
+        .byte   $00,$02,$85,$00,$03,$00,$00,$00
+        .byte   $00,$00,$00,$00,$00,$00,$00,$00
+        .byte   $02,$00,$85,$00,$03,$00,$00,$00
+
+        .align  16
+reversetab:
+        .word   33,-1,-33,0,1
 
 ;-------------------------------------------------------------------------------
 
@@ -73,22 +218,6 @@ framesync:
         ld      a,(hl)
 -:      cp      (hl)
         jr      z,{-}
-        jp      readinput
-
-;-------------------------------------------------------------------------------
-
-PIPE_DOWN = $05
-PIPE_HEAD = $34
-playerpos:
-        .word   0
-
-playerdown:
-        ld      hl,(playerpos)
-        ld      (hl),PIPE_DOWN
-        ld      de,33
-        add     hl,de
-        ld      (hl),PIPE_HEAD
-        ld      (playerpos),hl
         ret
 
 ;-------------------------------------------------------------------------------

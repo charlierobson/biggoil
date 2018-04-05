@@ -3,7 +3,6 @@
 .module INPUT
 ;
 
-
 ; -----  4  3  2  1  0
 ;
 ; $FE -  V, C, X, Z, SH   0
