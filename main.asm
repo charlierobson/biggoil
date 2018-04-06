@@ -49,13 +49,13 @@ LEFT = 4
 PIPE_VERT = $85
 PIPE_HORIZ = $03
 
-PIPE_HEAD1 = $34 ; 'O'
-PIPE_HEAD2 = $1c ; '0'
+PIPE_HEAD1 = $34        ; 'O'
+PIPE_HEAD2 = $1c        ; '0'
 FUEL1 = $14
 FUEL2 = $16
 
-DOT = $1b       ; '.'
-ENTRANCE = $8c  ; inverse pound
+DOT = $1b               ; '.'
+ENTRANCE = $8c          ; ['£']
 
 SCORE_OFFS = $2fe
 HISCORE_OFFS = $307
@@ -76,11 +76,11 @@ line1:  .byte   0,1
 ;
 .module A_MAIN
 ;
-	ld      hl,level1
-	call	initentrances
+        call    initialiseenemies
 
         ld      hl,level1
         call    displaylevel
+	call	initentrances
 
         ld      hl,dfile+INITIAL_OFFS   ; set initial position and direction
         ld      (playerpos),hl
@@ -352,6 +352,7 @@ framesync:
 
 ;-------------------------------------------------------------------------------
 
+        .include enemies.asm
         .include score.asm
         .include input.asm
         .include ayfxplay.asm
