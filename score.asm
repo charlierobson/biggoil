@@ -28,11 +28,7 @@ addscore:
     ; do bonus here - every 2000 points
 
 displayscore:
-    ld      hl,(d_file)
-    ld      de,SCORE_OFFS
-    add     hl,de
-    ex      de,hl
-
+    ld      de,dfile+SCORE_OFFS
     ld      hl,(score)
     ld      a,h
     call    _bcd_a
@@ -68,11 +64,7 @@ checkhi:
     ld      (hiscore),hl    ; update hiscore, return with C set
 
 displayhi:
-    ld      hl,(d_file)
-    ld      de,HISCORE_OFFS
-    add     hl,de
-    ex      de,hl
-
+    ld      de,dfile+HISCORE_OFFS
     ld      hl,(hiscore)
     ld      a,h
     call    _bcd_a

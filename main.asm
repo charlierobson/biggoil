@@ -53,12 +53,13 @@ PIPE_HEAD1 = $34 ; 'O'
 PIPE_HEAD2 = $1c ; '0'
 
 DOT = $1b       ; '.'
+ENTRANCE = $8c  ; inverse pound
 
 SCORE_OFFS = $2fe
 HISCORE_OFFS = $307
 LVL_OFFS = $311
 MEN_OFFS = $317
-
+INITIAL_OFFS = $b7
 WINCH_OFFS = $34
 
 ;-------------------------------------------------------------------------------
@@ -71,18 +72,20 @@ line1:  .byte   0,1
 ;
 .module A_MAIN
 ;
-        ld      hl,leveldata
-        ld      de,dfile
-        ld      bc,24*33+1
-        ldir
+	ld      hl,level1
+	call	initentrances
 
-        ld      hl,dfile+$b7            ; set initial position and direction
+        ld      hl,level1
+        call    displaylevel
+
+        ld      hl,dfile+INITIAL_OFFS   ; set initial position and direction
         ld      (playerpos),hl
         ld      a,DOWN
         ld      (playerdirn),a
 
         ld      hl,retractqueue         ; initialise the pipeline retract lifo
         ld      (retractptr),hl
+
 
 mainloop:
         call    framesync
@@ -309,9 +312,7 @@ showwinch:
         ld      b,(hl)
         inc     hl
         ld      c,(hl)
-        ld      hl,(d_file)
-        ld      de,WINCH_OFFS
-        add     hl,de
+        ld      hl,dfile+WINCH_OFFS
         ld      (hl),b
         inc     hl
         ld      (hl),c
