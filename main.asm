@@ -54,6 +54,13 @@ PIPE_HEAD2 = $1c ; '0'
 
 DOT = $1b       ; '.'
 
+SCORE_OFFS = $2fe
+HISCORE_OFFS = $307
+LVL_OFFS = $311
+MEN_OFFS = $317
+
+WINCH_OFFS = $34
+
 ;-------------------------------------------------------------------------------
 
 line1:  .byte   0,1
@@ -83,35 +90,51 @@ mainloop:
 
         ld      a,(fire)                ; retract happens quickly so check every frame
         and     1
-        jr      z,{+}
+        jr      z,_noretract
 
-        call    retract
+        call    retract                 ; retract the head
+        call    showwinch
+
         jr      mainloop
 
-+:      ld      a,(frames)              ; only dig every 4th frame
-        and     3
+_noretract:
+        ld      a,(frames)              ; only dig every nth frame
+        and     3                       ; could be game speed controller?
         cp      3
         jr      nz,mainloop
 
-        ld      a,(headchar)
+        ld      a,(headchar)            ; animate the digging head
         xor     PIPE_HEAD1 ^ PIPE_HEAD2
         ld      (headchar),a
 
         call    tryup                   ; the tryxxx functions return with z set
-        jr      z,mainloop              ; if that direction was taken
+        jr      z,_headupdate           ; if that direction was taken
 
         call    trydown
-        jr      z,mainloop
+        jr      z,_headupdate
 
         call    tryleft
-        jr      z,mainloop
+        jr      z,_headupdate
 
         call    tryright
-        jr      z,mainloop
 
-        ld      hl,(playerpos)
+_headupdate:
+        call    showwinch               ; animate the winch
+
+        ld      hl,(playerpos)          ; update the digging head
         ld      a,(headchar)
         ld      (hl),a
+
+        ld      a,(scoretoadd)
+        and     a        
+        jr      z,mainloop
+
+        ld      c,a
+        xor     a
+        ld      (scoretoadd),a
+        ld      b,a
+        call    addscore
+        call    checkhi
         jr      mainloop
 
 ;-------------------------------------------------------------------------------
@@ -122,13 +145,17 @@ retract:
         cp      l
         ret     z
 
+        ld      a,(winchframe)          ; update winch animation
+        inc     a
+        ld      (winchframe),a
+
         dec     hl                      ; get the direction the player last moved
         ld      (retractptr),hl
         ld      a,(hl)                  ; reset player direction so that bends work when
         ld      (playerdirn),a          ; the player resumes digging
 
-        and     a                       ; get offset to position that player arrived from last frame
-        rlca
+        and     a                       ; get offset to the screen position that the player
+        rlca                            ; arrived from last frame
         or      reversetab & 255
         ld      l,a
         ld      h,reversetab / 256
@@ -147,7 +174,7 @@ retract:
 
 
 setdirection:
-        ld      (playerdirn),a
+        ld      (playerdirn),a          ; stash player direction and extend the pipe queue
         ld      hl,(retractptr)
         ld      (hl),a
         inc     hl
@@ -179,42 +206,54 @@ tryleft:
         ld      c,LEFT
 
 doturn:
-        and     1
-        jr      nz,{+}
+        and     1                       ; movement in the queried direction?
+        jr      nz,_moveavail
 
-        or      $ff
+        or      $ff                     ; nope - continue to check others
         ret
 
-+:      ld      hl,(playerpos)
+_moveavail:
+        ld      hl,(playerpos)
         ld      (oldplayerpos),hl
         add     hl,de
         ld      a,(hl)
         cp      0
-        jr      z,{+}
+        jr      z,_intothevoid
 
-        cp      DOT
+        cp      DOT                     ; obstruction ahead
         ret     nz
 
-+:      ld      a,(headchar)
-        ld      (hl),a
-        ld      (playerpos),hl
-        ld      a,(playerdirn)
+        ld      a,1                     ; oil get!
+        ld      (scoretoadd),a          ; defer adding of score because it's register intensive
+
+_intothevoid:
+        ld      a,(winchframe)          ; update winch animation
+        dec     a
+        ld      (winchframe),a
+
+        ld      (playerpos),hl          ; store updated player position
+
+        ld      a,(playerdirn)          ; determine pipe topography
         and     a
         rlca
         rlca
         rlca
-        ld      b,a
+        ld      b,a                     ; b = old player direction * 8
+
         ld      a,c
-        call    setdirection
-        or      b
-        or      turntable & 255
-        ld      e,a
+        call    setdirection            ; store new player direction in var & queue
+
+        or      b                       ; a = old player direction * 8 + new player direction
+        or      turntable & 255         ; index in to table of characters that describe a pipe
+        ld      e,a                     ; join from old -> new direction
         ld      d,turntable / 256
         ld      a,(de)
+
         ld      hl,(oldplayerpos)
         ld      (hl),a
         xor     a
         ret
+
 
 headchar:
         .byte   PIPE_HEAD1
@@ -248,6 +287,46 @@ turntable:
 reversetab:
         .word   33,-1,-33,0,1
 
+
+scoretoadd:
+        .byte   0
+
+score:
+        .word   0
+
+hiscore:
+        .word   0
+
+;-------------------------------------------------------------------------------
+
+showwinch:
+        ld      a,(winchframe)
+        and     3
+        rlca
+        or      winchanim & 255
+        ld      l,a
+        ld      h,winchanim / 256
+        ld      b,(hl)
+        inc     hl
+        ld      c,(hl)
+        ld      hl,(d_file)
+        ld      de,WINCH_OFFS
+        add     hl,de
+        ld      (hl),b
+        inc     hl
+        ld      (hl),c
+        ret
+
+winchframe:
+        .byte   0
+
+        .align  16
+winchanim:
+        .byte   $00,$01
+        .byte   $00,$04
+        .byte   $87,$00
+        .byte   $02,$00
+        
 ;-------------------------------------------------------------------------------
 
 framesync:
@@ -259,6 +338,7 @@ framesync:
 
 ;-------------------------------------------------------------------------------
 
+        .include score.asm
         .include input.asm
         .include ayfxplay.asm
 
@@ -277,16 +357,12 @@ line10:
         .byte   076H                    ; N/L
 line10end:
 
-;-------------------------------------------------------------------------------
-
 dfile:
         .repeat 24
           .byte   076H
           .fill   32,0
         .loop
         .byte   076H
-
-;-------------------------------------------------------------------------------
 
 var:
         .byte   080H
