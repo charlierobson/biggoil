@@ -3,7 +3,7 @@
 leveldata:
 
 level1:
-	.include	level1.asm
+	.include	level1.asm.txt
 
 
 ; hl points to level data
@@ -50,7 +50,7 @@ _next:
 	ld		de,entrances			; get entrance count
 	and		a
 	sbc		hl,de
-	ld		a,e
+	ld		a,l
 	rrca
 	ld		(entrancecount),a
 	ret
@@ -61,4 +61,3 @@ entrancecount:
 
 entrances:
 	.fill	20,0
-

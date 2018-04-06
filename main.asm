@@ -51,6 +51,8 @@ PIPE_HORIZ = $03
 
 PIPE_HEAD1 = $34 ; 'O'
 PIPE_HEAD2 = $1c ; '0'
+FUEL1 = $14
+FUEL2 = $16
 
 DOT = $1b       ; '.'
 ENTRANCE = $8c  ; inverse pound
@@ -61,6 +63,8 @@ LVL_OFFS = $311
 MEN_OFFS = $317
 INITIAL_OFFS = $b7
 WINCH_OFFS = $34
+FUELLING_OFFS = $7a
+
 
 ;-------------------------------------------------------------------------------
 
@@ -138,6 +142,12 @@ _headupdate:
         ld      b,a
         call    addscore
         call    checkhi
+
+        ld      a,(fuelchar)
+        xor     FUEL1 ^ FUEL2
+        ld      (fuelchar),a
+        ld      (dfile+FUELLING_OFFS),a
+
         jr      mainloop
 
 ;-------------------------------------------------------------------------------
@@ -317,6 +327,9 @@ showwinch:
         inc     hl
         ld      (hl),c
         ret
+
+fuelchar:
+        .byte   FUEL1
 
 winchframe:
         .byte   0
