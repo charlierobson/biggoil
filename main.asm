@@ -54,6 +54,7 @@ PIPE_HEAD2 = $1c        ; '0'
 FUEL1 = $14
 FUEL2 = $16
 
+ONEZ = $1d              ; '1'
 DOT = $1b               ; '.'
 ENEMY = $0c             ; '£'
 

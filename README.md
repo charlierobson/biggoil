@@ -4,10 +4,11 @@
 
 ### bugs:
 * enemies crossing leave an enemy character behind
+* wrong turns in pipes after retraction
 
 ### features:
 * sound
-* rom dependency removal vis custom irq handler
+* rom dependency removal via custom irq handler
 * animating enemies
 * different enemy types
 * character tables (and hence UDG possibility) for:
@@ -16,3 +17,4 @@
 * title screen
 * game over screen
 * control customisation
+* music?

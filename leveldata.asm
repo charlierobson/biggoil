@@ -35,6 +35,11 @@ displaylevel:
 	ldir
 	dec		a
 	jr		nz,{-}
+
+	ld		a,(level)
+	add		a,ONEZ
+	ld		hl,dfile+LVL_OFFS
+	ld		(hl),a
 	ret
 
 
