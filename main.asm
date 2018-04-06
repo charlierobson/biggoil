@@ -49,7 +49,9 @@ LEFT = 4
 PIPE_VERT = $85
 PIPE_HORIZ = $03
 
-PIPE_HEAD = $34 ; 'O'
+PIPE_HEAD1 = $34 ; 'O'
+PIPE_HEAD2 = $1c ; '0'
+
 DOT = $1b       ; '.'
 
 ;-------------------------------------------------------------------------------
@@ -67,49 +69,65 @@ line1:  .byte   0,1
         ld      bc,24*33+1
         ldir
 
-        ld      hl,dfile+$b7
+        ld      hl,dfile+$b7            ; set initial position and direction
         ld      (playerpos),hl
         ld      a,DOWN
         ld      (playerdirn),a
 
--:      call    framesync
-        ld      a,(frames)
-        and     3
-        cp      3
-        jr      nz,{-}
+        ld      hl,retractqueue         ; initialise the pipeline retract lifo
+        ld      (retractptr),hl
 
+mainloop:
+        call    framesync
         call    readinput
 
-        ld      a,(fire)
-        cp      1
-        jr      nz,{+}
-
-        call    startretract
-        jr      {-}
-
-+:      and     1
+        ld      a,(fire)                ; retract happens quickly so check every frame
+        and     1
         jr      z,{+}
 
         call    retract
-        jr      {-}
+        jr      mainloop
 
-+:      call    tryup
-        jr      z,{-}
++:      ld      a,(frames)              ; only dig every 4th frame
+        and     3
+        cp      3
+        jr      nz,mainloop
+
+        ld      a,(headchar)
+        xor     PIPE_HEAD1 ^ PIPE_HEAD2
+        ld      (headchar),a
+
+        call    tryup                   ; the tryxxx functions return with z set
+        jr      z,mainloop              ; if that direction was taken
 
         call    trydown
-        jr      z,{-}
+        jr      z,mainloop
 
         call    tryleft
-        jr      z,{-}
+        jr      z,mainloop
 
         call    tryright
-        jr      {-}
+        jr      z,mainloop
+
+        ld      hl,(playerpos)
+        ld      a,(headchar)
+        ld      (hl),a
+        jr      mainloop
 
 ;-------------------------------------------------------------------------------
 
-startretract:
-        ld      a,(playerdirn)
-        and     a
+retract:
+        ld      hl,(retractptr)         ; because the retract buffer sits on a 256 byte
+        xor     a                       ; boundary we can use the lsb to tell when it's empty
+        cp      l
+        ret     z
+
+        dec     hl                      ; get the direction the player last moved
+        ld      (retractptr),hl
+        ld      a,(hl)                  ; reset player direction so that bends work when
+        ld      (playerdirn),a          ; the player resumes digging
+
+        and     a                       ; get offset to position that player arrived from last frame
         rlca
         or      reversetab & 255
         ld      l,a
@@ -118,15 +136,22 @@ startretract:
         inc     hl
         ld      d,(hl)
         ld      e,a
-        ld      hl,(playerpos)
+
+        ld      hl,(playerpos)          ; reset head
         ld      (hl),0
-        add     hl,de
+
+        add     hl,de                   ; update head to previous position
         ld      (playerpos),hl
-        ld      (hl),PIPE_HEAD
+        ld      (hl),PIPE_HEAD1         ; no animation when retracting
         ret
 
 
-retract:
+setdirection:
+        ld      (playerdirn),a
+        ld      hl,(retractptr)
+        ld      (hl),a
+        inc     hl
+        ld      (retractptr),hl
         ret
 
 
@@ -170,7 +195,8 @@ doturn:
         cp      DOT
         ret     nz
 
-+:      ld      (hl),PIPE_HEAD
++:      ld      a,(headchar)
+        ld      (hl),a
         ld      (playerpos),hl
         ld      a,(playerdirn)
         and     a
@@ -179,7 +205,7 @@ doturn:
         rlca
         ld      b,a
         ld      a,c
-        ld      (playerdirn),a
+        call    setdirection
         or      b
         or      turntable & 255
         ld      e,a
@@ -190,6 +216,9 @@ doturn:
         xor     a
         ret
 
+headchar:
+        .byte   PIPE_HEAD1
+
 playerpos:
         .word   0
 
@@ -199,15 +228,23 @@ oldplayerpos:
 playerdirn:
         .word   0
 
-        .align  64
+retractptr:
+        .word   0
+
+        .align  256
+retractqueue:
+        .fill   256,$ff
+
+        ;.align 256
 turntable:
         .byte   $85,$85,$00,$00,$84,$00,$00,$00
         .byte   $03,$03,$84,$00,$00,$00,$00,$00
         .byte   $00,$02,$85,$00,$03,$00,$00,$00
         .byte   $00,$00,$00,$00,$00,$00,$00,$00
         .byte   $02,$00,$85,$00,$03,$00,$00,$00
+        .byte   $00,$00,$00,$00,$00,$00,$00,$00
 
-        .align  16
+        ;.align 16
 reversetab:
         .word   33,-1,-33,0,1
 
