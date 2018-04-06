@@ -76,7 +76,10 @@ line1:  .byte   0,1
 ;
 .module A_MAIN
 ;
-        ld      hl,level1
+        xor     a
+        ld      (level),a
+
+newlevel:
         call    displaylevel
 	call	initentrances
 
@@ -169,7 +172,13 @@ _headupdate:
 
 nextlevel:
         call    tidyup
-        jp      restart
+        ld      a,(level)
+        inc     a
+        cp      2
+        jr      nz,{+}
+        xor     a
++:      ld      (level),a
+        jp      newlevel
 
 
 ;-------------------------------------------------------------------------------

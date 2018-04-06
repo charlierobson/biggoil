@@ -2,15 +2,31 @@
 ;
 .module LEVELDATA
 
+level:
+	.byte	0
+
+	.align	64
 leveldata:
+	.word	level1, level2
 
 level1:
 	.include	level1.asm.txt
+level2:
+	.include	level2.asm.txt
 
 
-; hl points to level data
-;
 displaylevel:
+	ld		a,(level)			; level to HL
+	and		a
+	rlca
+	or		leveldata & 255
+	ld		l,a
+	ld		h,leveldata / 256
+	ld		a,(hl)
+	inc		hl
+	ld		h,(hl)
+	ld		l,a
+
 	ld		de,dfile
 	ld		a,24
 
@@ -75,4 +91,4 @@ entrancecount:
 
 	.align	32
 entrances:
-	.fill	10*4,0					; up to 10 entrances, 4 bytes apiece
+	.fill	12*4,0					; up to 10 entrances, 4 bytes apiece
