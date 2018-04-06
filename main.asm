@@ -55,7 +55,7 @@ FUEL1 = $14
 FUEL2 = $16
 
 DOT = $1b               ; '.'
-ENTRANCE = $8c          ; ['£']
+ENEMY = $0c             ; '£'
 
 SCORE_OFFS = $2fe
 HISCORE_OFFS = $307
@@ -76,11 +76,12 @@ line1:  .byte   0,1
 ;
 .module A_MAIN
 ;
-        call    initialiseenemies
-
         ld      hl,level1
         call    displaylevel
 	call	initentrances
+
+restart:
+        call    initialiseenemies
 
         ld      hl,dfile+INITIAL_OFFS   ; set initial position and direction
         ld      (playerpos),hl
@@ -90,11 +91,26 @@ line1:  .byte   0,1
         ld      hl,retractqueue         ; initialise the pipeline retract lifo
         ld      (retractptr),hl
 
+        xor     a
+        ld      (playerhit),a
 
 mainloop:
         call    framesync
         call    readinput
 
+        ld      a,(frames)
+        and     a
+        call    z,startenemy
+
+        call    updateenemies
+        ld      a,(playerhit)
+        and     a
+        jr      z,_playon
+
+        call    loselife
+        jr      restart
+
+_playon:
         ld      a,(fire)                ; retract happens quickly so check every frame
         and     1
         jr      z,_noretract
@@ -132,23 +148,100 @@ _headupdate:
         ld      a,(headchar)
         ld      (hl),a
 
-        ld      a,(scoretoadd)
+        ld      a,(scoretoadd)          ; any score last frame?
         and     a        
         jr      z,mainloop
 
-        ld      c,a
+        ld      c,a                     ; add score
         xor     a
         ld      (scoretoadd),a
         ld      b,a
         call    addscore
         call    checkhi
 
-        ld      a,(fuelchar)
+        ld      a,(fuelchar)            ; show fuel pumping into lorry
         xor     FUEL1 ^ FUEL2
         ld      (fuelchar),a
         ld      (dfile+FUELLING_OFFS),a
 
-        jr      mainloop
+        call    countdots
+        jr      nz,mainloop
+
+nextlevel:
+        call    tidyup
+        jp      restart
+
+
+;-------------------------------------------------------------------------------
+
+countdots:
+        ld      hl,dfile+6*33
+        ld      de,16*33
+        ld      c,0
+
+-:      ld      a,(hl)
+        cp      DOT
+        jr      nz,{+}
+
+        inc     c
+
++:      inc     hl
+        dec     de
+        ld      a,d
+        or      e
+        jr      nz,{-}
+
+        ld      a,c
+        or      a
+        ret
+
+
+;-------------------------------------------------------------------------------
+
+loselife:
+        call    tidyup
+
+        ret
+
+
+tidyup:
+        ld      b,4
+-:      push    bc
+        call    framesync
+        call    invertscreen
+        pop     bc
+        djnz    {-}
+
+        call    resetenemies
+
+-:      call    framesync
+        call    retract                 ; retract the head
+        call    showwinch
+        ld      a,(retractptr)
+        and     a
+        jr      nz,{-}
+        ret
+
+
+invertscreen:
+        ld      hl,dfile
+        ld      bc,33*24
+
+_inverter:
+        ld      a,(hl)
+        cp      $76
+        jr      z,_noinvert
+
+        xor     $80
+        ld      (hl),a
+
+_noinvert:
+        inc     hl
+        dec     bc
+        ld      a,b
+        or      c
+        jr      nz,_inverter
+        ret
 
 ;-------------------------------------------------------------------------------
 
@@ -233,6 +326,9 @@ _moveavail:
         cp      0
         jr      z,_intothevoid
 
+        cp      ENEMY
+        jr      z,_intothevoid
+        
         cp      DOT                     ; obstruction ahead
         ret     nz
 
@@ -273,6 +369,12 @@ headchar:
 
 playerpos:
         .word   0
+
+playerhit:
+        .byte   0
+
+playerhome:
+        .byte   0
 
 oldplayerpos:
         .word   0
