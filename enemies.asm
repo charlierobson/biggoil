@@ -123,6 +123,8 @@ _ehup:
     jr      nc,{+}
 
     ld      (playerhit),a       ; signal life lost
+    ld      a,7
+    call    AFXPLAY
 
 +:  ld      (iy+1),l            ; show where we hit
     ld      (iy+2),h
@@ -134,6 +136,8 @@ _ediedwithscore:
     ld      a,(scoretoadd)
     add     a,2
     ld      (scoretoadd),a
+    ld      a,14
+    call    AFXPLAY
 
 _edied:
     dec     (iy)

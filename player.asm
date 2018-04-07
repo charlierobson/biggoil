@@ -49,6 +49,9 @@ _moveavail:
         ld      a,1                     ; oil get!
         ld      (scoretoadd),a          ; defer adding of score because it's register intensive
 
+        ld      a,4
+        call    AFXPLAY
+
 _intothevoid:
         ld      a,(winchframe)          ; update winch animation
         dec     a

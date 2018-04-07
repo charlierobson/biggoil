@@ -233,6 +233,9 @@ AFXPLAY2:	; pre-inc A for wnen sfx number is pre-adjusted
 	inc		a
 
 AFXPLAY:
+	push    hl
+	push    bc
+	push    de
 	dec		a
 	ld de,0				;in DE the longest time in search
 	ld h,e
@@ -276,6 +279,9 @@ afxPlay1
 	ld (hl),d
 	dec hl
 	ld (hl),e
+	pop     de
+	pop     bc
+	pop     hl
 	ret
 
 peet:

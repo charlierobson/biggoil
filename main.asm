@@ -76,7 +76,10 @@ line1:  .byte   0,1
 ;-------------------------------------------------------------------------------
 ;
 .module A_MAIN
-;
+
+        call    initsfx
+        call    installirq
+
         xor     a
         ld      (level),a
 
@@ -127,8 +130,8 @@ _playon:
         jr      z,_noretract
 
         call    retract                 ; retract the head
+        call    retract
         call    showwinch
-
         jr      mainloop
 
 _noretract:
@@ -179,7 +182,11 @@ _headupdate:
         jr      nz,mainloop
 
 nextlevel:
+        ld      a,12
+        call    AFXPLAY
+
         call    tidyup
+
         ld      a,(level)
         inc     a
         cp      2
@@ -216,7 +223,6 @@ countdots:
 
 loselife:
         call    tidyup
-
         ret
 
 
@@ -232,6 +238,8 @@ tidyup:
 
 -:      call    framesync
         call    retract                 ; retract the head
+        call    retract
+        call    retract
         call    showwinch
         ld      a,(retractptr)
         and     a
@@ -305,8 +313,9 @@ framesync:
         .include enemies.asm
         .include score.asm
         .include input.asm
+        .include sfx.asm
+        .include irq.asm
         .include ayfxplay.asm
-
         .include leveldata.asm
 
 ;-------------------------------------------------------------------------------
