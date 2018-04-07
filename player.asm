@@ -173,3 +173,6 @@ score:
 
 hiscore:
         .word   0
+
+lives:
+        .byte   0

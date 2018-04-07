@@ -80,6 +80,9 @@ line1:  .byte   0,1
         xor     a
         ld      (level),a
 
+        ld      a,4
+        ld      (lives),a
+
         ld      a,DOWN
         ld      (retractqueue-1),a
 

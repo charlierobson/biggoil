@@ -4,7 +4,6 @@
 
 ### bugs:
 * enemies crossing leave an enemy character behind
-* wrong turns in pipes after retraction
 
 ### features:
 * sound

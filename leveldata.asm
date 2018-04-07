@@ -28,7 +28,7 @@ displaylevel:
 	ld		l,a
 
 	ld		de,dfile
-	ld		a,24
+	ld		a,23
 
 -:	inc		de
 	ld		bc,32
@@ -38,9 +38,20 @@ displaylevel:
 
 	ld		a,(level)
 	add		a,ONEZ
-	ld		hl,dfile+LVL_OFFS
+	ld		hl,scoreline+25
 	ld		(hl),a
+
+	ld		a,(lives)
+	add		a,ONEZ
+	ld		hl,scoreline+31
+	ld		(hl),a
+
+	ld		hl,scoreline			; render the scoreline
+	ld		de,dfile+23*33+1
+	ld		bc,32
+	ldir
 	ret
+
 
 
 initentrances:
@@ -97,3 +108,7 @@ entrancecount:
 	.align	32
 entrances:
 	.fill	12*4,0					; up to 10 entrances, 4 bytes apiece
+
+
+scoreline:
+        .include scoreline.asm
