@@ -80,6 +80,9 @@ line1:  .byte   0,1
         xor     a
         ld      (level),a
 
+        ld      a,DOWN
+        ld      (retractqueue-1),a
+
 newlevel:
         call    displaylevel
 	call	initentrances
@@ -89,7 +92,8 @@ restart:
 
         ld      hl,dfile+INITIAL_OFFS   ; set initial position and direction
         ld      (playerpos),hl
-        ld      a,DOWN
+
+        ld      a,DOWN                  ; player's 'last' move was down so correct pipe can be drawn
         ld      (playerdirn),a
 
         ld      hl,retractqueue         ; initialise the pipeline retract lifo

@@ -2,49 +2,6 @@
 ;
 .module PLAYER
 
-retract:
-        ld      hl,(retractptr)         ; because the retract buffer sits on a 256 byte
-        xor     a                       ; boundary we can use the lsb to tell when it's empty
-        cp      l
-        ret     z
-
-        ld      a,(winchframe)          ; update winch animation
-        inc     a
-        ld      (winchframe),a
-
-        dec     hl                      ; get the direction the player last moved
-        ld      (retractptr),hl
-        ld      a,(hl)                  ; reset player direction so that bends work when
-        ld      (playerdirn),a          ; the player resumes digging
-
-        and     a                       ; get offset to the screen position that the player
-        rlca                            ; arrived from last frame
-        or      reversetab & 255
-        ld      l,a
-        ld      h,reversetab / 256
-        ld      a,(hl)
-        inc     hl
-        ld      d,(hl)
-        ld      e,a
-
-        ld      hl,(playerpos)          ; reset head
-        ld      (hl),0
-
-        add     hl,de                   ; update head to previous position
-        ld      (playerpos),hl
-        ld      (hl),PIPE_HEAD1         ; no animation when retracting
-        ret
-
-
-setdirection:
-        ld      (playerdirn),a          ; stash player direction and extend the pipe queue
-        ld      hl,(retractptr)
-        ld      (hl),a
-        inc     hl
-        ld      (retractptr),hl
-        ret
-
-
 tryup:
         ld      a,(up)
         ld      de,-33
@@ -121,6 +78,53 @@ _intothevoid:
         ret
 
 
+
+retract:
+        ld      hl,(retractptr)         ; because the retract buffer sits on a 256 byte
+        xor     a                       ; boundary we can use the lsb to tell when it's empty
+        cp      l
+        ret     z
+
+        ld      a,(winchframe)          ; update winch animation
+        inc     a
+        ld      (winchframe),a
+
+        dec     hl                      ; get the direction the player last moved
+        ld      (retractptr),hl
+        dec     hl
+        ld      a,(hl)                  ; reset player direction to the one that brought us here
+        ld      (playerdirn),a          ; so that bends work when the player resumes digging
+        inc     hl                      ; use the last move direction to re-position player
+        ld      a,(hl)
+
+        and     a                       ; get offset to the screen position that the player
+        rlca                            ; arrived from last frame
+        or      reversetab & 255
+        ld      l,a
+        ld      h,reversetab / 256
+        ld      a,(hl)
+        inc     hl
+        ld      d,(hl)
+        ld      e,a
+
+        ld      hl,(playerpos)          ; reset head
+        ld      (hl),0
+
+        add     hl,de                   ; update head to previous position
+        ld      (playerpos),hl
+        ld      (hl),PIPE_HEAD1         ; no animation when retracting
+        ret
+
+
+setdirection:
+        ld      (playerdirn),a          ; stash player direction and extend the pipe queue
+        ld      hl,(retractptr)
+        ld      (hl),a
+        inc     hl
+        ld      (retractptr),hl
+        ret
+
+
 headchar:
         .byte   PIPE_HEAD1
 
@@ -142,6 +146,7 @@ playerdirn:
 retractptr:
         .word   0
 
+        .word   0       ; padding byte - do not remove
         .align  256
 retractqueue:
         .fill   256,$ff
