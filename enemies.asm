@@ -5,6 +5,8 @@
 NENEMIES = 10
 
 initialiseenemies:
+    ld      iy,$4000
+
     ld      hl,enemydata
     ld      de,enemydata+1
     ld      bc,64*10-1
@@ -22,14 +24,20 @@ initialiseenemies:
 	add		hl,de
 	ld		(hl),$c0			; CDFLAG
     djnz    {-}
+
+    ld      iy,enemydata
     ret
 
 
 startenemy:
-    ld      iy,enemydata-64     ; can't leave iy dangling past initialised data
-    ld      b,NENEMIES
-    ld      de,64
     xor     a
+    ld      de,64
+    ld      b,NENEMIES
+
+    ld      iy,enemydata-64     ; can't leave iy dangling past initialised data
+
+    ; there is an ultra-short race condition here: if the display interrupt starts
+    ; between these 2 instructions then things will explode
 
 -:  add     iy,de
     cp      (iy)
@@ -70,8 +78,11 @@ _ehstart:
 
 
 updateenemies:
-    ld      iy,enemydata-64
     ld      b,NENEMIES
+    ld      iy,enemydata-64
+
+    ; there is an ultra-short race condition here: if the display interrupt starts
+    ; between these 2 instructions then things will explode
 
 -:  ld      de,64
     add     iy,de
