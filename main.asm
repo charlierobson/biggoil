@@ -89,6 +89,8 @@ line1:  .byte   0,1
         ld      a,DOWN
         ld      (retractqueue-1),a
 
+        call    displayscoreline
+
 newlevel:
         call    displaylevel
 	call	initentrances
@@ -111,6 +113,11 @@ restart:
 mainloop:
         call    framesync
         call    readinput
+
+        ld      a,(frames)
+        and     32
+        call    z,playlo
+        call    nz,playloer
 
         ld      a,(frames)
         and     127
@@ -179,7 +186,7 @@ _headupdate:
         ld      (dfile+FUELLING_OFFS),a
 
         call    countdots
-        jr      nz,mainloop
+        jp      nz,mainloop
 
 nextlevel:
         ld      a,12
@@ -193,6 +200,9 @@ nextlevel:
         jr      nz,{+}
         xor     a
 +:      ld      (level),a
+
+        call    displaylvl
+
         jp      newlevel
 
 ;-------------------------------------------------------------------------------

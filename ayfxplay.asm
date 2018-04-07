@@ -70,6 +70,7 @@ afxChDesc	.fill 3*4
 INIT_AFX:
 	inc hl
 	ld (afxBnkAdr+1),hl	;save the address of the table of offsets
+	ld (afxBnkAdr2+1),hl	;save the address of the table of offsets
 
 	ld hl,afxChDesc		;mark all channels as empty
 	ld de,$00ff
@@ -237,48 +238,49 @@ AFXPLAY:
 	push    bc
 	push    de
 	dec		a
-	ld de,0				;in DE the longest time in search
-	ld h,e
-	ld l,a
-	add hl,hl
+	ld 		de,0				;in DE the longest time in search
+	ld 		h,e
+	ld 		l,a
+	add	 	hl,hl
 afxBnkAdr
-	ld bc,0				;address of the effect offsets table
-	add hl,bc
-	ld c,(hl)
-	inc hl
-	ld b,(hl)
-	add hl,bc			;the effect address is obtained in hl
-	push hl				;save the effect address on the stack
+	ld 		bc,0				;address of the effect offsets table
+	add 	hl,bc
+	ld 		c,(hl)
+	inc 	hl
+	ld 		b,(hl)
+	add 	hl,bc			;the effect address is obtained in hl
+	push	hl				;save the effect address on the stack
 	
-	ld hl,afxChDesc		;empty channel search
-	ld b,3
+	ld 		hl,afxChDesc		;empty channel search
+;	ld 		b,3
+	ld 		b,2	; search 2 channels - force the third
 afxPlay0
-	inc hl
-	inc hl
-	ld a,(hl)			;compare the channel time with the largest
-	inc hl
-	cp e
-	jr c,afxPlay1
-	ld c,a
-	ld a,(hl)
-	cp d
-	jr c,afxPlay1
-	ld e,c				;remember the longest time
-	ld d,a
-	ld (peet),hl
+	inc 	hl
+	inc 	hl
+	ld 		a,(hl)			;compare the channel time with the largest
+	inc 	hl
+	cp 		e
+	jr	 	c,afxPlay1
+	ld 		c,a
+	ld 		a,(hl)
+	cp 		d
+	jr 		c,afxPlay1
+	ld 		e,c				;remember the longest time
+	ld 		d,a
+	ld 		(peet),hl
 afxPlay1
-	inc hl
-	djnz afxPlay0
+	inc 	hl
+	djnz 	afxPlay0
 
-	pop de				;take the effect address from the stack
-	ld hl,(peet)
-	ld (hl),b			;b is 0
-	dec hl
-	ld (hl),b
-	dec hl
-	ld (hl),d
-	dec hl
-	ld (hl),e
+	pop 	de				;take the effect address from the stack
+	ld 		hl,(peet)
+	ld 		(hl),b			;b is 0
+	dec 	hl
+	ld 		(hl),b
+	dec 	hl
+	ld 		(hl),d
+	dec 	hl
+	ld 		(hl),e
 	pop     de
 	pop     bc
 	pop     hl
@@ -286,3 +288,36 @@ afxPlay1
 
 peet:
 	.word	0
+
+
+AFXPLAYON3:
+	push    hl
+	push    bc
+	push    de
+	dec		a
+	ld 		h,0
+	ld 		l,a
+	add	 	hl,hl
+
+afxBnkAdr2
+	ld 		bc,0				;address of the effect offsets table
+	add 	hl,bc
+	ld 		c,(hl)
+	inc 	hl
+	ld 		b,(hl)
+	add 	hl,bc			;the effect address is obtained in hl
+	ex		de,hl
+
+	ld 		hl,afxChDesc+7
+	ld 		(hl),0			;b is 0
+	dec 	hl
+	ld 		(hl),0
+	dec 	hl
+	ld 		(hl),d
+	dec 	hl
+	ld 		(hl),e
+	pop     de
+	pop     bc
+	pop     hl
+	ret
+

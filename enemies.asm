@@ -30,6 +30,9 @@ initialiseenemies:
 
 
 startenemy:
+    ld      a,3
+    call    AFXPLAY
+
     xor     a
     ld      de,64
     ld      b,NENEMIES

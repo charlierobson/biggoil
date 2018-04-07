@@ -35,23 +35,31 @@ displaylevel:
 	ldir
 	dec		a
 	jr		nz,{-}
+	ret
 
+
+displaylvl:
 	ld		a,(level)
 	add		a,ONEZ
-	ld		hl,scoreline+25
+	ld		hl,dfile+LVL_OFFS
 	ld		(hl),a
+	ret
 
+
+displaymen:
 	ld		a,(lives)
 	add		a,ONEZ
-	ld		hl,scoreline+31
+	ld		hl,dfile+MEN_OFFS
 	ld		(hl),a
+	ret
 
+
+displayscoreline:
 	ld		hl,scoreline			; render the scoreline
 	ld		de,dfile+23*33+1
 	ld		bc,32
 	ldir
 	ret
-
 
 
 initentrances:
