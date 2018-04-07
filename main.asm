@@ -113,7 +113,7 @@ mainloop:
         call    readinput
 
         ld      a,(frames)
-        and     a
+        and     127
         call    z,startenemy
 
         call    updateenemies
