@@ -23,10 +23,12 @@ addscore:
     jr      c,displayscore
 
     ld      a,h                 ; h contains 1000s digits
-    and     $0f
+    and     $0f                 ; when 0 or 5 then extra man!
+    jr      z,_addbonus
     cp      5
     jr      nz,displayscore
 
+_addbonus:
     ld      a,(lives)           ; every 5000 points an extra man!
     inc     a
     ld      (lives),a
