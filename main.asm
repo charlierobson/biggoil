@@ -80,6 +80,16 @@ line1:  .byte   0,1
         call    initsfx
         call    installirq
 
+titlescn:
+        ld      hl,title
+        call    displayscreen
+
+-:      call    framesync
+        call    readinput
+        ld      a,(fire)
+        cp      1
+        jr      nz,{-}
+
         xor     a
         ld      (level),a
 
@@ -196,7 +206,7 @@ nextlevel:
 
         ld      a,(level)
         inc     a
-        cp      2
+        cp      4
         jr      nz,{+}
         xor     a
 +:      ld      (level),a

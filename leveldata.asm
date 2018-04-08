@@ -7,15 +7,22 @@ level:
 
 	.align	64
 leveldata:
-	.word	level1, level2
+	.word	level1, level2, level3, level4
 
 level1:
-	.include	testlvl.txt
-;	.include	level1.asm.txt
+	.include	lvl1.txt
 
 level2:
-	.include	level2.asm.txt
+	.include	lvl2.txt
 
+level3:
+	.include	lvl3.txt
+
+level4:
+	.include	lvl4.txt
+
+title:
+	.include 	title.txt
 
 displaylevel:
 	ld		a,(level)			; level to HL
@@ -28,9 +35,13 @@ displaylevel:
 	inc		hl
 	ld		h,(hl)
 	ld		l,a
-
-	ld		de,dfile
 	ld		a,23
+	jr		{+}
+
+displayscreen:
+	ld		a,24
+
++:	ld		de,dfile
 
 -:	inc		de
 	ld		bc,32

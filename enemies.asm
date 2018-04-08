@@ -120,48 +120,50 @@ _ehup:
     ld      l,(iy+EO_ADL)
     ld      h,(iy+EO_ADH)
 
-    ex      de,hl               ; on the player's head?
+    ex      de,hl               ; check if the player has eaten this enemy
     ld      hl,(playerpos)
     and     a
     sbc     hl,de
     ex      de,hl
     jr      z,_ediedwithscore
 
-    ld      a,(frames)
+    ld      a,(frames)          ; only update every few frames
     and     15
     cp      15
     ret     nz
 
-    inc     (iy+EO_FNO)
+    inc     (iy+EO_FNO)         ; internal frame counter
+
+    ld      a,(iy+EO_BG)        ; undraw at old pos
+    ld      (hl),a
 
     ld      e,(iy+EO_MDL)       ; move
     ld      d,(iy+EO_MDH)
-    ld      a,(iy+EO_BG)
-    ld      (hl),a
     add     hl,de
 
-    ld      a,(hl)              ; get character in target square
-    cp      $76                 ; about to wander off screen?
-    jr      z,_edied
-
-    ld      (iy+EO_BG),a
-    cp      DOT                 ; if not a dot then zero it as it's a space or another enemy
-    jr      z,{+}
-    ld      (iy+EO_BG),0        ; force bg char to 0 as we might have crossed another enemy
-+:
-
-    ex      de,hl               ; about to wander onto the player's head?
+    ex      de,hl               ; about to wander onto the player's head in the updated position?
     ld      hl,(playerpos)
     and     a
     sbc     hl,de
     ex      de,hl
     jr      z,_ediedwithscore
 
-    cp      0                   ; blank square
+    ld      a,(hl)              ; get character in target square
+
+    cp      $76                 ; about to wander off screen?
+    jr      z,_edied
+
+    ld      (iy+EO_BG),a        ; store bg char for undrawing next frame
+    cp      DOT                 ; if not a dot then zero it as it's a space or another enemy
     jr      z,{+}
 
+    ld      (iy+EO_BG),0        ; force bg char
+
++:  cp      0                   ; blank square? if so end update
+    jr      z,_eupd
+
     cp      128                 ; block wall - reverse!
-    jr      nz,{+}
+    jr      nz,_testhit
 
     ld      e,(iy+EO_MDL)       ; move
     ld      d,(iy+EO_MDH)
@@ -177,16 +179,19 @@ _ehup:
     add     hl,de
     jr      _eupd
 
-+:  and     $7f                 ; see if we've compromised the pipe
+_testhit:
+    ld      e,a
+    and     $7f                 ; see if we've compromised the pipe
     cp      8
     jr      nc,_eupd
 
+    ld      (iy+EO_BG),e        ; replace the bg character as it will have been zeroed
     ld      (playerhit),a       ; signal life lost
     ld      a,7
     call    AFXPLAY
 
 _eupd:
-    ld      (iy+EO_ADL),l       ; show where we hit
+    ld      (iy+EO_ADL),l       ; store updated position
     ld      (iy+EO_ADH),h
 
     ld      e,(iy+EO_ANL)       ; animate
@@ -196,7 +201,6 @@ _eupd:
     or      e
     ld      e,a
     ld      a,(de)
-
     ld      (hl),a
     ret
 
