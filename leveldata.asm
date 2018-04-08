@@ -10,7 +10,9 @@ leveldata:
 	.word	level1, level2
 
 level1:
-	.include	level1.asm.txt
+	.include	testlvl.txt
+;	.include	level1.asm.txt
+
 level2:
 	.include	level2.asm.txt
 
@@ -69,12 +71,16 @@ initentrances:
 	ld		(_adval1),a
 	inc		a
 	ld		(_adval0),a
+	ld		a,enemyanimL2R
+	ld		(_animnum),a
 	ld		de,dfile+$c7-33		; start checking at row 5
 	call	checkcolumn
 
 	ld		a,$ff
 	ld		(_adval0),a
 	ld		(_adval1),a
+	ld		a,enemyanimR2L
+	ld		(_animnum),a
 	ld		de,dfile+$e6-33
 
 checkcolumn:
@@ -104,6 +110,13 @@ _adval0 = $+1
 _adval1 = $+1
 	ld		(hl),0
 	inc		hl
+_animnum = $+1
+	ld		(hl),0
+	inc		hl
+	inc		hl
+	inc		hl
+	inc		hl
+
 	ld		a,(entrancecount)
 	inc		a
 	ld		(entrancecount),a
@@ -113,9 +126,9 @@ _adval1 = $+1
 entrancecount:
 	.byte	0
 
-	.align	32
+	.align	128
 entrances:
-	.fill	12*4,0					; up to 10 entrances, 4 bytes apiece
+	.fill	12*8,0					; up to 10 entrances, 8 bytes apiece
 
 
 scoreline:

@@ -29,6 +29,7 @@ doturn:
         and     1                       ; movement in the queried direction?
         jr      nz,_moveavail
 
+_nomove:
         or      $ff                     ; nope - continue to check others
         ret
 
@@ -39,16 +40,21 @@ _moveavail:
         ld      a,(hl)
         cp      0
         jr      z,_intothevoid
-
-        cp      ENEMY
-        jr      z,_intothevoid
-        
         cp      DOT                     ; obstruction ahead
-        ret     nz
+        jr      z,_intothescore
 
+        ; enemies from $0b..$1a inclusive
+        and     127
+        cp      $0b
+        jr      c,_nomove               ; is either pipe or background
+        cp      $1a
+        jr      nc,_nomove              ; is either pipe or background
+
+        jr      _intothevoid            ; probably an enemy
+
+_intothescore:
         ld      a,1                     ; oil get!
         ld      (scoretoadd),a          ; defer adding of score because it's register intensive
-
         ld      a,4
         call    AFXPLAY
 

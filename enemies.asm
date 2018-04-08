@@ -4,6 +4,16 @@
 
 NENEMIES = 10
 
+EO_ENA = 0  ; enemy enable 1 = active
+EO_ADL = 1  ; screen address lo
+EO_ADH = 2  ; screen address hi
+EO_MDL = 3  ; move delta lo
+EO_MDH = 4  ; move delta hi
+EO_ANL = 5  ; animation ptr lo
+EO_ANH = 6  ; animation ptr hi
+EO_BG = 7   ; background redraw char
+EO_FNO = 8  ; frame num
+
 initialiseenemies:
     ld      iy,$4000
 
@@ -54,29 +64,40 @@ _ehstart:
     and     7                   ; should be 0..entrance count -1 actually
     rlca
     rlca
+    rlca
     or      entrances & 255
     ld      l,a
     ld      h,entrances / 256
 
     ld      a,(hl)              ; address l
     ld      e,a
-    ld      (iy+1),a
+    ld      (iy+EO_ADL),a
 
     inc     hl
     ld      a,(hl)              ; address h
     ld      d,a
-    ld      (iy+2),a
+    ld      (iy+EO_ADH),a
 
     inc     hl
     ld      a,(hl)              ; direction
-    ld      (iy+3),a
+    ld      (iy+EO_MDL),a
 
     inc     hl
     ld      a,(hl)              ; direction
-    ld      (iy+4),a
+    ld      (iy+EO_MDH),a
 
-    ld      a,(de)              ; undraw character
-    ld      (iy+5),a
+    inc     hl
+    ld      a,(hl)              ; animation number
+    and     a
+    rlca
+    ld      (iy+EO_ANL),a
+    ld      (iy+EO_ANH),enemyanims / 256
+
+    ld      a,(de)              ; get the 'undraw' character
+    cp      DOT                 ; undraw safety net
+    jr      z,{+}
+    xor     a                   ; crossing enemies destroy oil! muaaahahhaa
++:  ld      (iy+EO_BG),a
     ret
 
 
@@ -96,8 +117,8 @@ updateenemies:
     ret
 
 _ehup:
-    ld      l,(iy+1)
-    ld      h,(iy+2)
+    ld      l,(iy+EO_ADL)
+    ld      h,(iy+EO_ADH)
 
     ex      de,hl               ; on the player's head?
     ld      hl,(playerpos)
@@ -111,16 +132,23 @@ _ehup:
     cp      15
     ret     nz
 
-    ld      e,(iy+3)            ; move
-    ld      d,(iy+4)
-    ld      a,(iy+5)
+    inc     (iy+EO_FNO)
+
+    ld      e,(iy+EO_MDL)       ; move
+    ld      d,(iy+EO_MDH)
+    ld      a,(iy+EO_BG)
     ld      (hl),a
     add     hl,de
-    ld      a,(hl)              ; get character in target square
-    ld      (iy+5),a
 
+    ld      a,(hl)              ; get character in target square
     cp      $76                 ; about to wander off screen?
     jr      z,_edied
+
+    ld      (iy+EO_BG),a
+    cp      DOT                 ; if not a dot then zero it as it's a space or another enemy
+    jr      z,{+}
+    ld      (iy+EO_BG),0        ; force bg char to 0 as we might have crossed another enemy
++:
 
     ex      de,hl               ; about to wander onto the player's head?
     ld      hl,(playerpos)
@@ -132,17 +160,44 @@ _ehup:
     cp      0                   ; blank square
     jr      z,{+}
 
-    and     $7f                 ; see if we've compromised the pipe
+    cp      128                 ; block wall - reverse!
+    jr      nz,{+}
+
+    ld      e,(iy+EO_MDL)       ; move
+    ld      d,(iy+EO_MDH)
+    xor     a
+    sub     e
+    ld      e,a
+    sbc     a,a
+    sub     d
+    ld      d,a
+    ld      (iy+EO_MDL),e       ; move
+    ld      (iy+EO_MDH),d
+    add     hl,de
+    add     hl,de
+    jr      _eupd
+
++:  and     $7f                 ; see if we've compromised the pipe
     cp      8
-    jr      nc,{+}
+    jr      nc,_eupd
 
     ld      (playerhit),a       ; signal life lost
     ld      a,7
     call    AFXPLAY
 
-+:  ld      (iy+1),l            ; show where we hit
-    ld      (iy+2),h
-    ld      (hl),ENEMY
+_eupd:
+    ld      (iy+EO_ADL),l       ; show where we hit
+    ld      (iy+EO_ADH),h
+
+    ld      e,(iy+EO_ANL)       ; animate
+    ld      d,(iy+EO_ANH)
+    ld      a,(iy+EO_FNO)
+    and     1
+    or      e
+    ld      e,a
+    ld      a,(de)
+
+    ld      (hl),a
     ret
 
 
@@ -169,9 +224,9 @@ resetenemies:
     jr      nz,{+}
 
     dec     (iy)
-    ld      l,(iy+1)
-    ld      h,(iy+2)
-    ld      a,(iy+5)
+    ld      l,(iy+EO_ADL)
+    ld      h,(iy+EO_ADH)
+    ld      a,(iy+EO_BG)
     ld      (hl),a
 
 +:  djnz    {-}
@@ -181,3 +236,16 @@ resetenemies:
     .align  256
 enemydata:
     .fill       64*10,0 ; 10 enemies of 64 bytes each
+
+
+MINUS = $16
+ERLCHAR = $12
+ELRCHAR = $13
+
+enemyanimL2R = 0
+enemyanimR2L = 1
+
+    .align 256
+enemyanims:
+    .byte       ENEMY,ENEMY|128       ; enemyanim0
+    .byte       ENEMY,ENEMY|128       ; enemyanim1 etc

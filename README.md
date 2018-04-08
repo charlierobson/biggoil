@@ -3,17 +3,30 @@
 ## todo:
 
 ### bugs:
-* enemies crossing leave an enemy character behind
+* ~~pipe turns are broken after retracting~~
+* ~~enemies crossing leave an enemy character behind~~
+* ~~'hello' sound too loud~~
 
 ### features:
-* sound
+* ~~enemy animations~~
+* ~~sound~~
 * rom dependency removal via custom irq handler
-* animating enemies
 * different enemy types
 * character tables (and hence UDG possibility) for:
   * boring head
-  * enemies
+  * ~~enemies~~
 * title screen
 * game over screen
 * control customisation
-* music?
+* music:
+  * level begin jingle
+  * level complete jingle
+  * title screen
+  * game over screen
+
+### whimsy
+* cloud animation
+* lorry animation
+
+### enemy behaviour
+* ~~turn around when obstructed~~
