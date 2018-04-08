@@ -7,15 +7,20 @@
 * ~~enemies crossing leave an enemy character behind~~
 * ~~'hello' sound too loud~~
 
+### engine
+* non-interruptable SFX
+* rom dependency removal via custom irq handler
+
 ### features:
+* timer?
 * ~~enemy animations~~
 * ~~sound~~
-* rom dependency removal via custom irq handler
+* ~~extra lives~~
 * different enemy types
 * character tables (and hence UDG possibility) for:
   * boring head
   * ~~enemies~~
-* title screen
+* ~~title screen~~
 * game over screen
 * control customisation
 * music:
@@ -25,8 +30,9 @@
   * game over screen
 
 ### whimsy
-* cloud animation
+* ~~cloud animation~~
 * lorry animation
+* message?
 
 ### enemy behaviour
 * ~~turn around when obstructed~~

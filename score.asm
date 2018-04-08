@@ -22,10 +22,17 @@ addscore:
     cp      1               ; did score just flip the 1000s digit?
     jr      c,displayscore
 
-    bit     0,h             ; return if odd number of 1000s
+    ld      a,h                 ; h contains 1000s digits
+    and     $0f
+    cp      5
     jr      nz,displayscore
 
-    ; do bonus here - every 2000 points
+    ld      a,(lives)           ; every 5000 points an extra man!
+    inc     a
+    ld      (lives),a
+    call    displaymen
+    ld      a,10
+    call    AFXPLAY
 
 displayscore:
     ld      de,dfile+SCORE_OFFS

@@ -54,6 +54,7 @@ PIPE_HEAD2 = $1c        ; '0'
 FUEL1 = $14
 FUEL2 = $16
 
+ZEROZ = $1c             ; '0'
 ONEZ = $1d              ; '1'
 DOT = $1b               ; '.'
 ENEMY = $0c             ; '£'
@@ -108,6 +109,8 @@ newlevel:
 restart:
         call    initialiseenemies
 
+        call    displaymen
+
         ld      hl,dfile+INITIAL_OFFS   ; set initial position and direction
         ld      (playerpos),hl
 
@@ -124,6 +127,8 @@ mainloop:
         call    framesync
         call    readinput
 
+        call    updatecloud
+
         ld      a,(frames)
         and     32
         call    z,playlo
@@ -139,7 +144,8 @@ mainloop:
         jr      z,_playon
 
         call    loselife
-        jr      restart
+        jr      nz,restart
+        jr      titlescn
 
 _playon:
         ld      a,(fire)                ; retract happens quickly so check every frame
@@ -190,10 +196,7 @@ _headupdate:
         call    addscore
         call    checkhi
 
-        ld      a,(fuelchar)            ; show fuel pumping into lorry
-        xor     FUEL1 ^ FUEL2
-        ld      (fuelchar),a
-        ld      (dfile+FUELLING_OFFS),a
+        call    lorryfill
 
         call    countdots
         jp      nz,mainloop
@@ -242,7 +245,17 @@ countdots:
 ;-------------------------------------------------------------------------------
 
 loselife:
-        call    tidyup
+        ld      a,(lives)
+        cp      1
+        jr      nz,{+}
+
+        ld      a,13
+        call    AFXPLAY
+
++:      call    tidyup
+        ld      a,(lives)
+        dec     a
+        ld      (lives),a
         ret
 
 
@@ -337,6 +350,7 @@ framesync:
         .include irq.asm
         .include ayfxplay.asm
         .include leveldata.asm
+        .include whimsy.asm
 
 ;-------------------------------------------------------------------------------
 

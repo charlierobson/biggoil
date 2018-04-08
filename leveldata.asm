@@ -61,7 +61,7 @@ displaylvl:
 
 displaymen:
 	ld		a,(lives)
-	add		a,ONEZ
+	add		a,ZEROZ
 	ld		hl,dfile+MEN_OFFS
 	ld		(hl),a
 	ret
