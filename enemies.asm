@@ -61,10 +61,10 @@ startenemy:
 _ehstart:
     inc     (iy)
 
-    ld      l,0                 ; shonky fixed point multiply
     ld      a,(entrancecount)   ; with a = R, add it to itself (entrancecount) times,
     ld      b,a                 ; incrementing l each time carry is set
     call    xrnd8
+    ld      l,0                 ; iow.. shonky fixed point multiply
 -:  add     a,a
     jr      nc,{+}
     inc     l

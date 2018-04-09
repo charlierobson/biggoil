@@ -7,7 +7,7 @@ level:
 
 	.align	64
 leveldata:
-	.word	level1, level2, level3, level4
+	.word	level3, level1, level2, level3, level4
 
 level1:
 	.include	lvl1.txt
