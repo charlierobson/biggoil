@@ -127,6 +127,11 @@ mainloop:
         call    framesync
         call    readinput
 
+        ld      a,(fire)
+        and     3
+        cp      2
+        call    z,resettone
+
         call    updatecloud
 
         ld      a,(frames)
@@ -152,9 +157,18 @@ _playon:
         and     1
         jr      z,_noretract
 
+        ld      hl,(retractptr)         ; because the retract buffer sits on a 256 byte
+        xor     a                       ; boundary we can use the lsb to tell when it's empty
+        cp      l
+        jr      z,_noretract
+
         call    retract                 ; retract the head
         call    retract
         call    showwinch
+        ld      a,(frames)
+        and     3
+        ld      a,18
+        call    z,generatetone
         jr      mainloop
 
 _noretract:
@@ -187,7 +201,7 @@ _headupdate:
 
         ld      a,(scoretoadd)          ; any score last frame?
         and     a        
-        jr      z,mainloop
+        jp      z,mainloop
 
         ld      c,a                     ; add score
         xor     a

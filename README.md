@@ -7,6 +7,7 @@
 * ~~enemies crossing leave an enemy character behind~~
 * ~~'hello' sound too loud~~
 * ~~invalid entrances can be selected~~
+* enemies walk through non-solid inverse characters
 
 ### engine
 * non-interruptable SFX
@@ -14,6 +15,10 @@
 * ~~fix race condition potentials~~
 
 ### features:
+* pick-ups
+  * slow enemies
+  * stop enemies
+  * nuke enemies
 * timer?
 * ~~enemy animations~~
 * ~~sound~~

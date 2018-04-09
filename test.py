@@ -21,3 +21,13 @@ combine(d,l, 0x03)
 combine(l,u, 0x02)
 combine(l,d, 0x85)
 combine(l,l, 0x03)
+
+w = 0x6f
+v = w & 15
+td = w & 16
+ct = w & 32
+cn = w & 64
+dn = w & 128
+print v,td,ct,cn,dn
+
+# 01f6 019e 0178 013a
