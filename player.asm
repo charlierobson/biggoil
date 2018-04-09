@@ -34,6 +34,9 @@ _nomove:
         ret
 
 _moveavail:
+        ld      a,17
+        ld      (psound),a
+
         ld      hl,(playerpos)
         ld      (oldplayerpos),hl
         add     hl,de
@@ -56,7 +59,7 @@ _intothescore:
         ld      a,1                     ; oil get!
         ld      (scoretoadd),a          ; defer adding of score because it's register intensive
         ld      a,4
-        call    AFXPLAY
+        ld      (psound),a
 
 _intothevoid:
         ld      a,(winchframe)          ; update winch animation
@@ -83,9 +86,15 @@ _intothevoid:
 
         ld      hl,(oldplayerpos)
         ld      (hl),a
+
+        ld      a,(psound)
+        call    AFXPLAY
+
         xor     a
         ret
 
+psound:
+        .byte   0
 
 
 retract:
