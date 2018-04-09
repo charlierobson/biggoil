@@ -7,7 +7,7 @@ level:
 
 	.align	64
 leveldata:
-	.word	level3, level1, level2, level3, level4
+	.word	level1, level2, level3, level4
 
 level1:
 	.include	lvl1.txt
@@ -80,6 +80,7 @@ initentrances:
 
 _c1:
 	xor		a
+	ld		(entrancecount),a
 	ld		(_adval1),a
 	inc		a
 	ld		(_adval0),a

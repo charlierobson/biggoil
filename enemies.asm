@@ -47,30 +47,32 @@ startenemy:
     ld      de,64
     ld      b,NENEMIES
 
-    ld      iy,enemydata-64     ; can't leave iy dangling past initialised data
-
-    ; there is an ultra-short race condition here: if the display interrupt starts
-    ; between these 2 instructions then things will explode
+    ld      iy,enemydata
+    jr      {+}
 
 -:  add     iy,de
-    cp      (iy)
++:  cp      (iy)
     jr      z,_ehstart
     djnz    {-}
     ret
 
+
 _ehstart:
     inc     (iy)
 
-    ld      a,(entrancecount)   ; with a = R, add it to itself (entrancecount) times,
-    ld      b,a                 ; incrementing l each time carry is set
-    call    xrnd8
-    ld      l,0                 ; iow.. shonky fixed point multiply
--:  add     a,a
+    ld      a,(entrancecount)   ; shonky fixed point multiply
+    ld      b,a                 ; get a random byte, treat it as a n/256 fraction
+    call    xrnd8               ; add it to a total (entrancecount) times
+    ld      c,a                 ; integer part is incremented when carry over
+    xor     a
+    ld      l,a
+-:  add     a,c
     jr      nc,{+}
     inc     l
 +:  djnz    {-}
 
     ld      a,l                 ; l is integer 0..entranceCount-1
+    and     a                   ; clear carry
     rlca
     rlca
     rlca
@@ -112,14 +114,12 @@ _ehstart:
 
 updateenemies:
     ld      b,NENEMIES
-    ld      iy,enemydata-64
+    ld      iy,enemydata
+    jr      {+}
 
-    ; there is an ultra-short race condition here: if the display interrupt starts
-    ; between these 2 instructions then things will explode
-
--:  ld      de,64
+-:  ld      de,64               ; de is corrupted in call so need to re-init
     add     iy,de
-    ld      a,(iy)
++:  ld      a,(iy)
     cp      1
     call    z,_ehup
     djnz    {-}
