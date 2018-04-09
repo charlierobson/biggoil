@@ -93,6 +93,8 @@ titlescn:
 
         xor     a
         ld      (level),a
+        ld      (score),a
+        ld      (score+1),a
 
         ld      a,4
         ld      (lives),a
@@ -105,6 +107,8 @@ titlescn:
 newlevel:
         call    displaylevel
 	call	initentrances
+
+        call    initdrone
 
 restart:
         call    initialiseenemies
@@ -127,17 +131,14 @@ mainloop:
         call    framesync
         call    readinput
 
-        ld      a,(fire)
+        ld      a,(fire)                ; if fire button has just been released then reset the retract tone
         and     3
         cp      2
         call    z,resettone
 
         call    updatecloud
 
-        ld      a,(frames)
-        and     32
-        call    z,playlo
-        call    nz,playloer
+        call    drone
 
         ld      a,(frames)
         and     127
@@ -160,14 +161,16 @@ _playon:
         ld      hl,(retractptr)         ; because the retract buffer sits on a 256 byte
         xor     a                       ; boundary we can use the lsb to tell when it's empty
         cp      l
-        jr      z,_noretract
+        jr      z,mainloop              ; even if we can't retract, jump back
 
         call    retract                 ; retract the head
-        call    retract
-        call    showwinch
         ld      a,(frames)
-        and     3
-        ld      a,18
+        and     1
+        call    z,retract               ; do an extra retract every other frame
+        call    showwinch               ; so it's about a speed and a half
+        ld      a,(frames)
+        and     3                       ; prepare the z flag
+        ld      a,18                    ; set up sound number in case it's time
         call    z,generatetone
         jr      mainloop
 

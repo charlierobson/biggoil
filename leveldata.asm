@@ -16,10 +16,10 @@ level2:
 	.include	lvl2.txt
 
 level3:
-	.include	lvl3.txt
+	.include	lvl4.txt
 
 level4:
-	.include	lvl4.txt
+	.include	lvl3.txt
 
 title:
 	.include 	title.txt

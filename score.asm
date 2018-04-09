@@ -33,8 +33,10 @@ _addbonus:
     inc     a
     ld      (lives),a
     call    displaymen
-    ld      a,10
-    call    AFXPLAY
+
+    ld      a,$47               ; length of uninterruptable sample
+    ld      b,10                ; sfx number
+    call    longplay
 
 displayscore:
     ld      de,dfile+SCORE_OFFS

@@ -8,19 +8,55 @@ initsfx:
     ret
 
 
-playlo:
-    push    af
-    ld      a,16
-    call    AFXPLAYON3
-    pop     af
+; haha this is cheeky.
+;
+longplay:
+    ld      (droneframe),a          ; prevent drone from taking over for the duration of this effect
+    ld      a,b
+    jp      AFXPLAYON3
+
+
+initdrone:
+    ld      a,(level)               ; drone rate
+    rlca
+    rlca
+    rlca
+    ld      b,a
+    ld      a,40
+    sub     b
+    ld      (dronerate),a
+    xor     a
+    ld      (dronetype),a
+    ld      (droneframe),a
+    ret
+      
+
+drone:
+    ld      a,(droneframe)
+    and     a
+    jr      z,_dronetime
+
+    dec     a
+    ld      (droneframe),a
     ret
 
-playloer:
-    push    af
-    ld      a,15
-    call    AFXPLAYON3
-    pop     af
-    ret
+_dronetime:
+    ld      a,(dronerate)
+    ld      (droneframe),a
+    ld      a,(dronetype)
+    xor     1
+    ld      (dronetype),a
+    add     a,15
+    jp      AFXPLAYON3
+
+droneframe:
+    .byte   0
+dronerate:
+    .byte   0
+dronetype:
+    .byte   0
+
+
 
 resettone:
     ld      hl,newtone+15
