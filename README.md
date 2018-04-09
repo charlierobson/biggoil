@@ -15,6 +15,9 @@
 * ~~fix race condition potentials~~
 
 ### features:
+* difficulty ramp
+  * enemy spawn rate
+  * enemy speed
 * pick-ups
   * slow enemies
   * stop enemies
