@@ -6,10 +6,12 @@
 * ~~pipe turns are broken after retracting~~
 * ~~enemies crossing leave an enemy character behind~~
 * ~~'hello' sound too loud~~
+* invalid entrances can be selected
 
 ### engine
 * non-interruptable SFX
 * rom dependency removal via custom irq handler
+* fix race condition potentials
 
 ### features:
 * timer?

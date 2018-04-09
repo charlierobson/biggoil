@@ -60,8 +60,17 @@ startenemy:
 
 _ehstart:
     inc     (iy)
-    ld      a,r
-    and     7                   ; should be 0..entrance count -1 actually
+
+    ld      l,0                 ; shonky fixed point multiply
+    ld      a,(entrancecount)   ; with a = R, add it to itself (entrancecount) times,
+    ld      b,a                 ; incrementing l each time carry is set
+    call    xrnd8
+-:  add     a,a
+    jr      nc,{+}
+    inc     l
++:  djnz    {-}
+
+    ld      a,l                 ; l is integer 0..entranceCount-1
     rlca
     rlca
     rlca
@@ -236,6 +245,50 @@ resetenemies:
 +:  djnz    {-}
     ret
 
+
+
+seedrnd:
+    ld      a,r
+    and     a
+    jr      z,seedrnd
+    ld      l,a
+    ld      a,r
+    ld      h,a
+    ld      (xrnd16+1),hl
+    ret
+
+
+xrnd8:
+    ld      a,(xrnd16+1)
+    ld      c,a
+    rrca
+    rrca
+    rrca
+    xor     $1f
+    add     a,c
+    sbc     a,255
+    ld      (xrnd16+1),a
+    ret
+
+
+xrnd16:
+    ld      hl,1       ; seed must not be 0
+    ld      a,h
+    rra
+    ld      a,l
+    rra
+    xor     h
+    ld      h,a
+    ld      a,l
+    rra
+    ld      a,h
+    rra
+    xor     l
+    ld      l,a
+    xor     h
+    ld      h,a
+    ld      (xrnd16+1),hl
+    ret
 
     .align  256
 enemydata:

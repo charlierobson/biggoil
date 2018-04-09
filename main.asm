@@ -77,7 +77,7 @@ line1:  .byte   0,1
 ;-------------------------------------------------------------------------------
 ;
 .module A_MAIN
-
+        call    seedrnd
         call    initsfx
         call    installirq
 
