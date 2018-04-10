@@ -270,6 +270,16 @@ nextlevel:
 
         call    tidyup
 
+        ld      c,10
+--:     ld      b,18
+-:      call    framesync
+        djnz    {-}
+        push    bc
+        call    truckdrive
+        pop     bc
+        dec     c
+        jr      nz,{--}
+
         ld      a,(level)
         inc     a
         cp      4

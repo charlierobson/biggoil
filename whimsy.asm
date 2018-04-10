@@ -33,3 +33,27 @@ lorryfill:
     ld      (fuelchar),a
     ld      (dfile+FUELLING_OFFS),a
     ret
+
+
+truckdrive:
+    ld      de,dfile+$41
+    ld      hl,dfile+$40
+    ld      bc,9
+    lddr
+    ld      (hl),0
+    ld      de,dfile+$62
+    ld      hl,dfile+$61
+    ld      bc,9
+    lddr
+    ld      (hl),0
+    ld      de,dfile+$83
+    ld      hl,dfile+$82
+    ld      bc,9
+    lddr
+    ld      (hl),0
+    ld      de,dfile+$94
+    ld      hl,dfile+$93
+    ld      bc,9
+    lddr
+    ld      (hl),0
+    ret
