@@ -1,9 +1,9 @@
 
 soundbank:
-    .incbin     biggoil.afb
+        .incbin biggoil.afb
 
 titlestc:
-    .incbin     yerz.stc
+        .incbin yerz.stc
 
 headchar:
         .byte   PIPE_HEAD1
@@ -32,9 +32,8 @@ newtonep1=newtone+1
 newtonep2=newtone+5
 newtonep3=newtone+8
 newtonep4=newtone+11
-    .byte   $EF,$F9,$03,$00,$AD,$03,$02,$AA,$2D,$01,$A7,$FB,$00,$D0,$20
-    .byte   $EF,$F9,$03,$00,$AD,$03,$02,$AA,$2D,$01,$A7,$FB,$00,$D0,$20
-
+        .byte   $EF,$F9,$03,$00,$AD,$03,$02,$AA,$2D,$01,$A7,$FB,$00,$D0,$20
+        .byte   $EF,$F9,$03,$00,$AD,$03,$02,$AA,$2D,$01,$A7,$FB,$00,$D0,$20
 
 
 scoretoadd:
@@ -57,23 +56,23 @@ ELRCHAR = $13
 enemyanimL2R = 0
 enemyanimR2L = 1
 
-        .word   0       ; padding byte - do not remove
+        .word   0               ; padding byte - do not remove
         .align  256
 retractqueue:
         .fill   256,$ff
 
-    .align  256
+        .align  256
 enemydata:
-    .fill       64*10,0 ; 10 enemies of 64 bytes each
+        .fill   64*10,0         ; 10 enemies of 64 bytes each
 
 	.align	128
 entrances:
-	.fill	12*8,0					; up to 10 entrances, 8 bytes apiece
+	.fill	12*8,0          ; up to 10 entrances, 8 bytes apiece
 
-    .align 16
+        .align 16
 enemyanims:
-    .byte       ENEMY,ENEMY|128       ; enemyanim0
-    .byte       ENEMY,ENEMY|128       ; enemyanim1 etc
+        .byte   ENEMY,ENEMY|128 ; enemyanim0
+        .byte   ENEMY,ENEMY|128 ; enemyanim1 etc
 
         .align 256
 turntable:
@@ -106,19 +105,19 @@ leveldata:
 	.word	level1, level2, level3, level4
 
 level1:
-	.include	lvl1.txt
+	.incbin lvl1.binlz
 
 level2:
-	.include	lvl2.txt
+	.incbin	lvl2.binlz
 
 level3:
-	.include	lvl4.txt
+	.incbin	lvl4.binlz
 
 level4:
-	.include	lvl3.txt
+	.incbin	lvl3.binlz
 
 title:
-	.incbin     title.binlz
+	.incbin title.binlz
 
 
 fuelchar:

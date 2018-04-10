@@ -1,10 +1,15 @@
-mono /usr/local/bin/Brass.exe title.txt title.bin
-lz48 -i title.bin -o title.binlz
-rm title.bin
+ #!/bin/bash 
+function compress {
+    mono /usr/local/bin/Brass.exe $1.txt $1.bin
+    ./lz48 -i $1.bin -o $1.binlz
+    rm $1.bin
+}
 
-mono /usr/local/bin/Brass.exe title.txt title.bin
-lz48 -i title.bin -o title.binlz
-rm title.bin
+compress title
+compress lvl1
+compress lvl2
+compress lvl3
+compress lvl4
 
 mono /usr/local/bin/Brass.exe main.asm biggoil.p -s -l biggoil.html
 

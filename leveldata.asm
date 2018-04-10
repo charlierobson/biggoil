@@ -13,21 +13,11 @@ displaylevel:
 	inc		hl
 	ld		h,(hl)
 	ld		l,a
-	ld		a,23
-	jr		{+}
-
-displayscreen:
-	ld		a,24
-
-+:	ld		de,dfile
-
--:	inc		de
-	ld		bc,32
-	ldir
-	dec		a
-	jr		nz,{-}
-	ret
-
+	ld		de,dfile
+	call	decrunch
+	call	displayscore
+	call	displayhi
+	call	displaymen
 
 displaylvl:
 	ld		a,(level)
