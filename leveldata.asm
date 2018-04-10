@@ -2,28 +2,6 @@
 ;
 .module LEV
 
-level:
-	.byte	0
-
-	.align	64
-leveldata:
-	.word	level1, level2, level3, level4
-
-level1:
-	.include	lvl1.txt
-
-level2:
-	.include	lvl2.txt
-
-level3:
-	.include	lvl4.txt
-
-level4:
-	.include	lvl3.txt
-
-title:
-	.include 	title.txt
-
 displaylevel:
 	ld		a,(level)			; level to HL
 	and		a
@@ -136,14 +114,3 @@ _animnum = $+1
 	ld		(entrancecount),a
 	ret
 
-
-entrancecount:
-	.byte	0
-
-	.align	128
-entrances:
-	.fill	12*8,0					; up to 10 entrances, 8 bytes apiece
-
-
-scoreline:
-        .include scoreline.asm

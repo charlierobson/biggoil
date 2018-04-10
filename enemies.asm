@@ -101,6 +101,7 @@ _ehstart:
     ld      a,(hl)              ; animation number
     and     a
     rlca
+    or      enemyanims & 255
     ld      (iy+EO_ANL),a
     ld      (iy+EO_ANH),enemyanims / 256
 
@@ -289,20 +290,3 @@ xrnd16:
     ld      h,a
     ld      (xrnd16+1),hl
     ret
-
-    .align  256
-enemydata:
-    .fill       64*10,0 ; 10 enemies of 64 bytes each
-
-
-MINUS = $16
-ERLCHAR = $12
-ELRCHAR = $13
-
-enemyanimL2R = 0
-enemyanimR2L = 1
-
-    .align 256
-enemyanims:
-    .byte       ENEMY,ENEMY|128       ; enemyanim0
-    .byte       ENEMY,ENEMY|128       ; enemyanim1 etc

@@ -81,15 +81,28 @@ line1:  .byte   0,1
         call    initsfx
         call    installirq
 
+        ld      b,50
+-:      call    framesync               ; give time for crappy LCD tvs to re-sync
+        djnz    {-}
+
 titlescn:
         ld      hl,title
-        call    displayscreen
+        ld      de,dfile
+        call    decrunch
+        ;call    displayscreen
+        ld      hl,titlestc
+        call    init_stc
 
 -:      call    framesync
+        push    iy
+        call    play_stc
+        pop     iy
         call    readinput
         ld      a,(fire)
         cp      1
         jr      nz,{-}
+
+        call    mute_ay
 
         xor     a
         ld      (level),a
@@ -150,8 +163,8 @@ mainloop:
         jr      z,_playon
 
         call    loselife
-        jr      nz,restart
-        jr      titlescn
+        jp      nz,restart
+        jp      titlescn
 
 _playon:
         ld      a,(fire)                ; retract happens quickly so check every frame
@@ -172,7 +185,7 @@ _playon:
         and     3                       ; prepare the z flag
         ld      a,18                    ; set up sound number in case it's time
         call    z,generatetone
-        jr      mainloop
+        jp      mainloop
 
 _noretract:
         ld      a,(frames)              ; only dig every nth frame
@@ -335,19 +348,6 @@ showwinch:
         ld      (hl),c
         ret
 
-fuelchar:
-        .byte   FUEL1
-
-winchframe:
-        .byte   0
-
-        .align  16
-winchanim:
-        .byte   $00,$01
-        .byte   $00,$04
-        .byte   $87,$00
-        .byte   $02,$00
-        
 ;-------------------------------------------------------------------------------
 
 framesync:
@@ -364,10 +364,14 @@ framesync:
         .include score.asm
         .include input.asm
         .include sfx.asm
+        .include stcplay.asm
         .include irq.asm
         .include ayfxplay.asm
         .include leveldata.asm
         .include whimsy.asm
+        .include decrunch.asm
+
+        .include data.asm
 
 ;-------------------------------------------------------------------------------
 

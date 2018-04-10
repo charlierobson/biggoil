@@ -86,45 +86,18 @@ generatetone:
     jp      AFXPLAY
 
 
-alter:
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    dec     hl
-    ret
-
 updatetone:
+    ld      de,12
     ld      hl,(newtonep1)
-    call    alter
+    sbc     hl,de
     ld      (newtonep1),hl
     ld      hl,(newtonep2)
-    call    alter
+    sbc     hl,de
     ld      (newtonep2),hl
     ld      hl,(newtonep3)
-    call    alter
+    sbc     hl,de
     ld      (newtonep3),hl
     ld      hl,(newtonep4)
-    call    alter
+    sbc     hl,de
     ld      (newtonep4),hl
     ret
-
-newtone:
-newtonep1=newtone+1
-newtonep2=newtone+5
-newtonep3=newtone+8
-newtonep4=newtone+11
-    .byte   $EF,$F9,$03,$00,$AD,$03,$02,$AA,$2D,$01,$A7,$FB,$00,$D0,$20
-    .byte   $EF,$F9,$03,$00,$AD,$03,$02,$AA,$2D,$01,$A7,$FB,$00,$D0,$20
-
-
-
-soundbank:
-    .incbin     biggoil.afb

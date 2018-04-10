@@ -1,3 +1,12 @@
+mono /usr/local/bin/Brass.exe title.txt title.bin
+lz48 -i title.bin -o title.binlz
+rm title.bin
+
+mono /usr/local/bin/Brass.exe title.txt title.bin
+lz48 -i title.bin -o title.binlz
+rm title.bin
+
 mono /usr/local/bin/Brass.exe main.asm biggoil.p -s -l biggoil.html
+
 cp biggoil.p zxpandsdcard/menu.p
 cp biggoil.p.sym zxpandsdcard/menu.p.sym
