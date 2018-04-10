@@ -72,54 +72,28 @@ truckdriveoff:
     ld      (de),a
     ret
 
-39 ->
-     41, 40, 3f, 3e ... 39
-      1   2   3   4      9
-
-truckdriveoff:
-    ld      hl,offscreenmap+$39
-    ld      de,dfile+$41
-    ld      bc,1
-    ldir
-    ld      hl,offscreenmap+$39+33
-    ld      de,dfile+$41+33
-    ld      bc,1
-    ldir
-    ld      hl,offscreenmap+$39+66
-    ld      de,dfile+$41+66
-    ld      bc,1
-    ldir
-    ld      hl,offscreenmap+$39+99
-    ld      de,dfile+$41+99
-    ld      bc,1
-    ldir
-    ld      hl,offscreenmap+$39+99+33
-    ld      de,dfile+$41+99+33
-    ld      bc,1
-    ldir
-    ret
+src 39 ->
+dest len
+ 41   1
+ 40   2
+ 
+    ld      a,1
+    ld      hl,dfile+$41
+    call    truckin
+    ld      de,33
+    add     hl,de
+    inc     a
 
 
-
-truckdriveon:
-    ld      de,dfile+$41
-    ld      hl,dfile+$40
-    ld      bc,8
-    lddr
-    ld      (de),a
-    ld      de,dfile+$62
-    ld      hl,dfile+$61
-    ld      bc,8
-    lddr
-    ld      (de),a
-    ld      de,dfile+$83
-    ld      hl,dfile+$82
-    ld      bc,8
-    lddr
-    ld      (de),a
-    ld      de,dfile+$a4
-    ld      hl,dfile+$a3
-    ld      bc,8
-    lddr
-    ld      (de),a
+truckin:
+    push    af
+    push    hl
+    ld      d,h
+    ld      e,l
+    ld      hl,offscreen
+    ld      c,a
+    ld      b,0
+    ldir
+    pop     hl
+    pop     af
     ret
