@@ -269,7 +269,6 @@ nextlevel:
         call    AFXPLAY
 
         call    tidyup
-        call    truckfest
 
         ld      a,(level)
         inc     a
