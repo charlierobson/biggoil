@@ -111,10 +111,10 @@ level2:
 	.incbin	lvl2.binlz
 
 level3:
-	.incbin	lvl4.binlz
+	.incbin	lvl3.binlz
 
 level4:
-	.incbin	lvl3.binlz
+	.incbin	lvl4.binlz
 
 title:
 	.incbin title.binlz
