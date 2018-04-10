@@ -11,14 +11,11 @@ headchar:
 playerpos:
         .word   0
 
-playerhit:
-        .byte   0
-
-playerhome:
-        .byte   0
-
 oldplayerpos:
         .word   0
+
+playerhit:
+        .byte   0
 
 playerdirn:
         .word   0

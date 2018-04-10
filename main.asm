@@ -140,6 +140,7 @@ _noflash:
 
 newlevel:
         call    displaylevel
+        call    createmap
 	call	initentrances
 
         call    initdrone
@@ -153,7 +154,7 @@ restart:
 
         call    displaymen
 
-        ld      hl,dfile+INITIAL_OFFS   ; set initial position and direction
+        ld      hl,INITIAL_OFFS         ; set initial position and direction
         ld      (playerpos),hl
 
         ld      a,DOWN                  ; player's 'last' move was down so correct pipe can be drawn
@@ -242,6 +243,8 @@ _headupdate:
         call    showwinch               ; animate the winch
 
         ld      hl,(playerpos)          ; update the digging head
+        ld      de,dfile
+        add     hl,de
         ld      a,(headchar)
         ld      (hl),a
 
