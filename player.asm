@@ -37,14 +37,10 @@ _moveavail:
         ld      a,17                    ; preempt the sound - snuffle
         ld      (psound),a
 
-        ld      hl,(playerpos)
-        ld      (oldplayerpos),hl       ; stash the current head offset
+        ld      hl,(playerpos)          ; stash the current head offset
+        ld      (oldplayerpos),hl
         add     hl,de                   ; update position
-
-        ld      de,dfile                ; check to see if square ahead is passable
-        add     hl,de
         ld      a,(hl)
-        sbc     hl,de
 
         cp      0                       ; check space and dots
         jr      z,_intothevoid
@@ -91,8 +87,6 @@ _intothevoid:
         ld      a,(de)
 
         ld      hl,(oldplayerpos)       ; update pipe
-        ld      de,dfile
-        add     hl,de
         ld      (hl),a
 
         ld      a,(psound)
@@ -134,14 +128,9 @@ retract:
         ld      e,a
 
         ld      hl,(playerpos)          ; reset head
-        ld      bc,dfile
-        add     hl,bc
         ld      (hl),0
-
         add     hl,de                   ; update head to previous position
         ld      (hl),PIPE_HEAD1         ; no animation when retracting
-        and     a
-        sbc     hl,bc
         ld      (playerpos),hl
         ret
 
