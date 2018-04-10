@@ -60,7 +60,10 @@ DOT = $1b               ; '.'
 ENEMY = $0c             ; '£'
 
 SCORE_OFFS = $2fe
+SCORE_TITLE_OFFS = $2f8
 HISCORE_OFFS = $307
+HISCORE_TITLE_OFFS = $313
+
 LVL_OFFS = $311
 MEN_OFFS = $317
 INITIAL_OFFS = $b7
@@ -89,6 +92,9 @@ titlescn:
         ld      hl,title
         ld      de,dfile
         call    decrunch
+        call    displayscoreonts
+        call    displayhionts
+
         ld      hl,titlestc
         call    init_stc
 

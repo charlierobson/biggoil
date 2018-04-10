@@ -40,6 +40,7 @@ _addbonus:
 
 displayscore:
     ld      de,dfile+SCORE_OFFS
+_dselse:
     ld      hl,(score)
     ld      a,h
     call    _bcd_a
@@ -63,6 +64,9 @@ show_char:
     inc     de
     ret
 
+displayscoreonts:
+    ld      de,dfile+SCORE_TITLE_OFFS
+    jr      _dselse
 
 checkhi:
     ld      hl,(hiscore)
@@ -76,9 +80,15 @@ checkhi:
 
 displayhi:
     ld      de,dfile+HISCORE_OFFS
+_dhielse:
     ld      hl,(hiscore)
     ld      a,h
     call    _bcd_a
 
     ld      a,l
     jp      _bcd_a
+
+
+displayhionts:
+    ld      de,dfile+HISCORE_TITLE_OFFS
+    jr      _dhielse
