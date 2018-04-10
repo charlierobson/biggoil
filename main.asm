@@ -449,6 +449,7 @@ line10:
         .byte   076H                    ; N/L
 line10end:
 
+        .align  1024
 dfile:
         .repeat 24
           .byte   076H
@@ -456,6 +457,7 @@ dfile:
         .loop
         .byte   076H
 
+        .align  1024
 offscreenmap:
         .fill   33*24
 

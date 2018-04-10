@@ -116,6 +116,8 @@ _scryit:
 	jr		z,_storeit
 	cp		DOT
 	jr		z,_storeit
+	cp		$76
+	jr		z,_storeit
 	ld		a,128
 _storeit:
 	ld		(de),a
