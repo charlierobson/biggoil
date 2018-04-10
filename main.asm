@@ -92,14 +92,29 @@ titlescn:
         ld      hl,titlestc
         call    init_stc
 
--:      call    framesync
+_titleloop:
+        call    framesync
         push    iy
         call    play_stc
         pop     iy
+
+        ld      a,(frames)
+        and     15
+        jr      nz,_noflash
+
+        ld      hl,dfile+$303
+        ld      b,10
+_ilop:  ld      a,(hl)
+        xor     $80
+        ld      (hl),a
+        inc     hl
+        djnz    _ilop
+
+_noflash:
         call    readinput
         ld      a,(fire)
         cp      1
-        jr      nz,{-}
+        jr      nz,_titleloop
 
         call    mute_ay
         call    initsfx
