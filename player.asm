@@ -88,6 +88,9 @@ _intothevoid:
 
         ld      hl,(oldplayerpos)       ; update pipe
         ld      (hl),a
+        set     2,h
+        ld      (hl),8
+        res     2,h
 
         ld      a,(psound)
         call    AFXPLAY
@@ -129,6 +132,9 @@ retract:
 
         ld      hl,(playerpos)          ; reset head
         ld      (hl),0
+        set     2,h
+        ld      (hl),0
+        res     2,h
         add     hl,de                   ; update head to previous position
         ld      (hl),PIPE_HEAD1         ; no animation when retracting
         ld      (playerpos),hl

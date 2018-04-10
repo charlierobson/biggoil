@@ -1,3 +1,23 @@
+level3:
+	.incbin	lvl3.binlz
+
+level4:
+	.incbin	lvl4.binlz
+
+        ; AIMING TO HAVE DFILE AT $5000
+
+        .align  1024
+dfile:
+        .repeat 24
+          .byte   076H
+          .fill   32,0
+        .loop
+        .byte   076H
+
+        .align  1024
+offscreenmap:
+        .fill   33*24
+
 
 soundbank:
         .incbin biggoil.afb
@@ -6,6 +26,8 @@ titlestc:
         .incbin yerz.stc
 
 headchar:
+
+
         .byte   PIPE_HEAD1
 
 playerpos:
@@ -108,12 +130,6 @@ level1:
 
 level2:
 	.incbin	lvl2.binlz
-
-level3:
-	.incbin	lvl3.binlz
-
-level4:
-	.incbin	lvl4.binlz
 
 title:
 	.incbin title.binlz

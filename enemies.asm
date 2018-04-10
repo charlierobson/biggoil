@@ -11,8 +11,7 @@ EO_MDL = 3  ; move delta lo
 EO_MDH = 4  ; move delta hi
 EO_ANL = 5  ; animation ptr lo
 EO_ANH = 6  ; animation ptr hi
-EO_BG = 7   ; background redraw char
-EO_FNO = 8  ; frame num
+EO_FNO = 7  ; frame num
 
 initialiseenemies:
     ld      iy,$4000
@@ -81,12 +80,10 @@ _ehstart:
     ld      h,entrances / 256
 
     ld      a,(hl)              ; address l
-    ld      e,a
     ld      (iy+EO_ADL),a
 
     inc     hl
     ld      a,(hl)              ; address h
-    ld      d,a
     ld      (iy+EO_ADH),a
 
     inc     hl
@@ -105,11 +102,6 @@ _ehstart:
     ld      (iy+EO_ANL),a
     ld      (iy+EO_ANH),enemyanims / 256
 
-    ld      a,(de)              ; get the 'undraw' character
-    cp      DOT                 ; undraw safety net
-    jr      z,{+}
-    xor     a                   ; crossing enemies destroy oil! muaaahahhaa
-+:  ld      (iy+EO_BG),a
     ret
 
 
@@ -144,7 +136,9 @@ _ehup:
 
     inc     (iy+EO_FNO)         ; internal frame counter
 
-    ld      a,(iy+EO_BG)        ; undraw at old pos
+    set     2,h
+    ld      a,(hl)              ; undraw at old pos using char from map
+    res     2,h
     ld      (hl),a
 
     ld      e,(iy+EO_MDL)       ; move
@@ -158,21 +152,14 @@ _ehup:
     ex      de,hl
     jr      z,_ediedwithscore
 
-    ld      a,(hl)              ; get character in target square
+    set     2,h
+    ld      a,(hl)              ; get character in target square in map
+    res     2,h
 
     cp      $76                 ; about to wander off screen?
     jr      z,_edied
 
-    ld      (iy+EO_BG),a        ; store bg char for undrawing next frame
-    cp      DOT                 ; if not a dot then zero it as it's a space or another enemy
-    jr      z,{+}
-
-    ld      (iy+EO_BG),0        ; force bg char
-
-+:  cp      0                   ; blank square? if so end update
-    jr      z,_eupd
-
-    cp      128                 ; block wall - reverse!
+    cp      128                 ; wall?
     jr      nz,_testhit
 
     ld      e,(iy+EO_MDL)       ; move
@@ -190,12 +177,9 @@ _ehup:
     jr      _eupd
 
 _testhit:
-    ld      e,a
-    and     $7f                 ; see if we've compromised the pipe
     cp      8
-    jr      nc,_eupd
+    jr      nz,_eupd
 
-    ld      (iy+EO_BG),e        ; replace the bg character as it will have been zeroed
     ld      (playerhit),a       ; signal life lost
     ld      a,7
     call    AFXPLAY
@@ -240,7 +224,9 @@ resetenemies:
     dec     (iy)
     ld      l,(iy+EO_ADL)
     ld      h,(iy+EO_ADH)
-    ld      a,(iy+EO_BG)
+    set     2,h
+    ld      a,(hl)
+    res     2,h
     ld      (hl),a
 
 +:  djnz    {-}
