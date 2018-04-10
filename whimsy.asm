@@ -35,25 +35,91 @@ lorryfill:
     ret
 
 
-truckdrive:
+truckfest:
+    ld      c,10
+--: ld      b,12
+-:  call    framesync
+    djnz    {-}
+    push    bc
+    call    truckdriveoff
+    pop     bc
+    dec     c
+    jr      nz,{--}
+    ret
+
+
+truckdriveoff:
+    xor     a
     ld      de,dfile+$41
     ld      hl,dfile+$40
-    ld      bc,9
+    ld      bc,8
     lddr
-    ld      (hl),0
+    ld      (de),a
     ld      de,dfile+$62
     ld      hl,dfile+$61
-    ld      bc,9
+    ld      bc,8
     lddr
-    ld      (hl),0
+    ld      (de),a
     ld      de,dfile+$83
     ld      hl,dfile+$82
-    ld      bc,9
+    ld      bc,8
     lddr
-    ld      (hl),0
-    ld      de,dfile+$94
-    ld      hl,dfile+$93
-    ld      bc,9
+    ld      (de),a
+    ld      de,dfile+$a4
+    ld      hl,dfile+$a3
+    ld      bc,8
     lddr
-    ld      (hl),0
+    ld      (de),a
+    ret
+
+39 ->
+     41, 40, 3f, 3e ... 39
+      1   2   3   4      9
+
+truckdriveoff:
+    ld      hl,offscreenmap+$39
+    ld      de,dfile+$41
+    ld      bc,1
+    ldir
+    ld      hl,offscreenmap+$39+33
+    ld      de,dfile+$41+33
+    ld      bc,1
+    ldir
+    ld      hl,offscreenmap+$39+66
+    ld      de,dfile+$41+66
+    ld      bc,1
+    ldir
+    ld      hl,offscreenmap+$39+99
+    ld      de,dfile+$41+99
+    ld      bc,1
+    ldir
+    ld      hl,offscreenmap+$39+99+33
+    ld      de,dfile+$41+99+33
+    ld      bc,1
+    ldir
+    ret
+
+
+
+truckdriveon:
+    ld      de,dfile+$41
+    ld      hl,dfile+$40
+    ld      bc,8
+    lddr
+    ld      (de),a
+    ld      de,dfile+$62
+    ld      hl,dfile+$61
+    ld      bc,8
+    lddr
+    ld      (de),a
+    ld      de,dfile+$83
+    ld      hl,dfile+$82
+    ld      bc,8
+    lddr
+    ld      (de),a
+    ld      de,dfile+$a4
+    ld      hl,dfile+$a3
+    ld      bc,8
+    lddr
+    ld      (de),a
     ret

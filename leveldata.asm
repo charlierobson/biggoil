@@ -108,7 +108,10 @@ _animnum = $+1
 createmap:
 	ld		hl,dfile
 	ld		de,offscreenmap
-	ld		bc,33*24
+	ld		bc,33*5
+	ldir
+	
+	ld		bc,33*19
 
 _scryit:
 	ld		a,(hl)

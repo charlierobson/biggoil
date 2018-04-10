@@ -1,8 +1,8 @@
 level3:
 	.incbin	lvl3.binlz
 
-level4:
-	.incbin	lvl4.binlz
+level2:
+	.incbin	lvl2.binlz
 
         ; AIMING TO HAVE DFILE AT $5000
 
@@ -128,8 +128,9 @@ leveldata:
 level1:
 	.incbin lvl1.binlz
 
-level2:
-	.incbin	lvl2.binlz
+level4:
+	.incbin	lvl4.binlz
+
 
 title:
 	.incbin title.binlz

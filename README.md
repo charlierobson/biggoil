@@ -46,7 +46,7 @@
 
 ### whimsy
 * ~~cloud animation~~
-* lorry animation
+* ~~lorry animation~~
 * message?
 
 ### enemy behaviour

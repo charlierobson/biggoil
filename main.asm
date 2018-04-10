@@ -269,16 +269,7 @@ nextlevel:
         call    AFXPLAY
 
         call    tidyup
-
-        ld      c,10
---:     ld      b,18
--:      call    framesync
-        djnz    {-}
-        push    bc
-        call    truckdrive
-        pop     bc
-        dec     c
-        jr      nz,{--}
+        call    truckfest
 
         ld      a,(level)
         inc     a
