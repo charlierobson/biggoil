@@ -26,6 +26,8 @@ playerdirn:
 retractptr:
         .word   0
 
+timerv:
+        .byte   0
 
 newtone:
 newtonep1=newtone+1

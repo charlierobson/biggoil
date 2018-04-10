@@ -69,6 +69,7 @@ MEN_OFFS = $317
 INITIAL_OFFS = $b7
 WINCH_OFFS = $34
 FUELLING_OFFS = $7a
+TIMER_OFFS = $98
 
 
 ;-------------------------------------------------------------------------------
@@ -94,7 +95,6 @@ titlescn:
         call    decrunch
         call    displayscoreonts
         call    displayhionts
-
         ld      hl,titlestc
         call    init_stc
 
@@ -145,6 +145,10 @@ newlevel:
         call    initdrone
 
 restart:
+        ld      a,$99
+        ld      (timerv),a
+        call    inittimer
+
         call    initialiseenemies
 
         call    displaymen
@@ -171,18 +175,23 @@ mainloop:
         call    z,resettone
 
         call    updatecloud
-
         call    drone
 
         ld      a,(frames)
         and     127
         call    z,startenemy
 
+        ld      a,(frames)
+        and     63
+        call    z,dotimer                 ; returns with z set if timer has hit 0
+        jr      z,_die
+
         call    updateenemies
         ld      a,(playerhit)
         and     a
         jr      z,_playon
 
+_die:
         call    loselife
         jp      nz,restart
         jp      titlescn
@@ -268,6 +277,36 @@ nextlevel:
         call    displaylvl
 
         jp      newlevel
+
+;-------------------------------------------------------------------------------
+
+inittimer:
+        ld      a,(timerv)
+        jr      _timerdd
+
+dotimer:
+        ld      a,(timerv)
+        and     a
+        ret     z
+        dec     a
+        daa
+        ld      (timerv),a
+_timerdd:
+        push    af
+        and     $f0
+        rrca
+        rrca
+        rrca
+        rrca
+        add     a,ZEROZ+128
+        ld      de,dfile+TIMER_OFFS
+        ld      (de),a
+        pop     af
+        and     $0f
+        add     a,ZEROZ+128
+        inc     de
+        ld      (de),a
+        ret
 
 ;-------------------------------------------------------------------------------
 
@@ -413,6 +452,9 @@ dfile:
           .fill   32,0
         .loop
         .byte   076H
+
+offscreenmap:
+        .fill   33*24
 
 var:
         .byte   080H

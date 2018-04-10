@@ -104,3 +104,6 @@ _animnum = $+1
 	ld		(entrancecount),a
 	ret
 
+
+createmap:
+	
