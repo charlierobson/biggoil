@@ -89,7 +89,6 @@ titlescn:
         ld      hl,title
         ld      de,dfile
         call    decrunch
-        ;call    displayscreen
         ld      hl,titlestc
         call    init_stc
 
@@ -103,6 +102,7 @@ titlescn:
         jr      nz,{-}
 
         call    mute_ay
+        call    initsfx
 
         xor     a
         ld      (level),a
