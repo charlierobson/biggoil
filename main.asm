@@ -59,6 +59,8 @@ ONEZ = $1d              ; '1'
 DOT = $1b               ; '.'
 ENEMY = $0c             ; '£'
 
+MAP_PIPE = $08          ; grey square
+
 SCORE_OFFS = $2fe
 SCORE_TITLE_OFFS = $2f8
 HISCORE_OFFS = $307

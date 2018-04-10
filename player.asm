@@ -89,7 +89,7 @@ _intothevoid:
         ld      hl,(oldplayerpos)       ; update pipe
         ld      (hl),a
         set     2,h
-        ld      (hl),8
+        ld      (hl),MAP_PIPE
         res     2,h
 
         ld      a,(psound)

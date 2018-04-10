@@ -177,8 +177,13 @@ _ehup:
     jr      _eupd
 
 _testhit:
-    cp      8
+    cp      MAP_PIPE
     jr      nz,_eupd
+
+    ld      a,(hl)              ; the pipe character we collided with on-screen
+    set     2,h
+    ld      (hl),a              ; stuff it in off screen map for undrawing
+    res     2,h                 ; it will be erased anyway so why not
 
     ld      (playerhit),a       ; signal life lost
     ld      a,7
