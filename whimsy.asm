@@ -33,3 +33,20 @@ lorryfill:
     ld      (fuelchar),a
     ld      (dfile+FUELLING_OFFS),a
     ret
+
+
+showwinch:
+        ld      a,(winchframe)
+        and     3
+        rlca
+        or      winchanim & 255
+        ld      l,a
+        ld      h,winchanim / 256
+        ld      b,(hl)
+        inc     hl
+        ld      c,(hl)
+        ld      hl,dfile+WINCH_OFFS
+        ld      (hl),b
+        inc     hl
+        ld      (hl),c
+        ret

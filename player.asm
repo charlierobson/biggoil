@@ -108,10 +108,6 @@ retract:
         cp      l
         ret     z
 
-        ld      a,(winchframe)          ; update winch animation
-        inc     a
-        ld      (winchframe),a
-
         dec     hl                      ; get the direction the player last moved
         ld      (retractptr),hl
         dec     hl

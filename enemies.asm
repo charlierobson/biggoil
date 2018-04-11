@@ -48,9 +48,9 @@ initenemytimer:
     rlca
     rlca                        ; 0..56
     ld      b,a
-    ld      a,150
+    ld      a,110
     sub     b
-    ld      (leveltrig),a       ; 150 .. 94
+    ld      (leveltrig),a       ; 110 .. 54
     ret
 
 
@@ -75,6 +75,7 @@ generatimer:
 
 leveltrig:
     .byte   0
+
 
 startenemy:
     ld      a,3

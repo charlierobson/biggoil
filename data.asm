@@ -143,6 +143,11 @@ level4:
 title:
 	.incbin title.binlz
 
+end:
+	.incbin end.binlz
+
+timeout:
+        .byte   0
 
 fuelchar:
         .byte   FUEL1

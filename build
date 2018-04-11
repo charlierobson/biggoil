@@ -6,6 +6,7 @@ function compress {
 }
 
 compress title
+compress end
 compress lvl1
 compress lvl2
 compress lvl3

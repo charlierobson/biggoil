@@ -87,9 +87,8 @@ line1:  .byte   0,1
         call    initsfx
         call    installirq
 
-        ld      b,100
--:      call    framesync               ; give time for crappy LCD tvs to re-sync
-        djnz    {-}
+        ld      b,100                   ; give time for crappy LCD tvs to re-sync
+        call    waitframes
 
 titlescn:
         ld      hl,title
@@ -121,6 +120,7 @@ _ilop:  ld      a,(hl)
 _noflash:
         call    readinput
         ld      a,(fire)
+        and     3
         cp      1
         jr      nz,_titleloop
 
@@ -196,6 +196,16 @@ mainloop:
 _die:
         call    loselife
         jp      nz,restart
+
+        ld      b,100
+        call    waitframes
+
+        ld      hl,end
+        ld      de,dfile
+        call    decrunch
+
+        call    waitfire
+
         jp      titlescn
 
 _playon:
@@ -212,6 +222,11 @@ _playon:
         ld      a,(frames)
         and     1
         call    z,retract               ; do an extra retract every other frame
+
+        ld      a,(winchframe)          ; update winch animation
+        inc     a
+        ld      (winchframe),a
+
         call    showwinch               ; so it's about a speed and a half
         ld      a,(frames)
         and     3                       ; prepare the z flag
@@ -358,6 +373,9 @@ tidyup:
         call    retract                 ; retract the head
         call    retract
         call    retract
+        ld      a,(winchframe)          ; update winch animation
+        inc     a
+        ld      (winchframe),a
         call    showwinch
         ld      a,(retractptr)
         and     a
@@ -387,29 +405,22 @@ _noinvert:
 
 ;-------------------------------------------------------------------------------
 
-showwinch:
-        ld      a,(winchframe)
+waitfire:
+        xor     a
+        ld      (timeout),a
+
+-:      call    framesync
+        call    readinput
+
+        ld      a,(fire)
         and     3
-        rlca
-        or      winchanim & 255
-        ld      l,a
-        ld      h,winchanim / 256
-        ld      b,(hl)
-        inc     hl
-        ld      c,(hl)
-        ld      hl,dfile+WINCH_OFFS
-        ld      (hl),b
-        inc     hl
-        ld      (hl),c
-        ret
-
-;-------------------------------------------------------------------------------
-
-framesync:
-        ld      hl,frames
-        ld      a,(hl)
--:      cp      (hl)
-        jr      z,{-}
+        cp      1
+        ret     z
+        
+        ld      a,(timeout)
+        dec     a
+        ld      (timeout),a
+        jr      nz,{-}
         ret
 
 ;-------------------------------------------------------------------------------
