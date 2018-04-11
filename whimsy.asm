@@ -57,19 +57,23 @@ gameoverscreen:
     ld      de,dfile
     call    decrunch
 
-;    ld      hl,endstc
-;    call    init_stc
-;    ld      a,63
-;    ld      (timeout),a
+    ld      hl,titlestc
+    call    init_stc
+    ld      a,16
+    ld	    (pl_current_position),a
+    call    next_pattern
 
-;_endloop:
-;    call    framesync
-;    push    iy
-;    call    play_stc
-;    pop     iy
-;    ld      a,(timeout)
-;    dec     a
-;    ld      (timeout),a
-;    jr      nz,_endloop
-    
-    jp    waitfire
+    ld      a,63
+    ld      (timeout),a
+
+_endloop:
+    call    framesync
+    push    iy
+    call    play_stc
+    pop     iy
+	ld	    a,(pl_current_position)
+    cp      18
+    jr      nz,_endloop
+
+    call    mute_stc    
+    jp      waitfire

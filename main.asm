@@ -132,7 +132,7 @@ _noflash:
         ld      (score),a
         ld      (score+1),a
 
-        ld      a,4
+        ld      a,1
         ld      (lives),a
 
         ld      a,DOWN
