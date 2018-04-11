@@ -36,7 +36,7 @@
   * boring head
   * ~~enemies~~
 * ~~title screen~~
-* game over screen
+* ~~game over screen~~
 * control customisation
 * music:
   * level begin jingle

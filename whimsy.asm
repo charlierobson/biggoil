@@ -50,3 +50,26 @@ showwinch:
         inc     hl
         ld      (hl),c
         ret
+    
+
+gameoverscreen: 
+    ld      hl,end
+    ld      de,dfile
+    call    decrunch
+
+;    ld      hl,endstc
+;    call    init_stc
+;    ld      a,63
+;    ld      (timeout),a
+
+;_endloop:
+;    call    framesync
+;    push    iy
+;    call    play_stc
+;    pop     iy
+;    ld      a,(timeout)
+;    dec     a
+;    ld      (timeout),a
+;    jr      nz,_endloop
+    
+    jp    waitfire

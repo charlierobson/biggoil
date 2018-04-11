@@ -197,14 +197,10 @@ _die:
         call    loselife
         jp      nz,restart
 
-        ld      b,100
+        ld      b,75
         call    waitframes
 
-        ld      hl,end
-        ld      de,dfile
-        call    decrunch
-
-        call    waitfire
+        call    gameoverscreen
 
         jp      titlescn
 

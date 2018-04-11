@@ -34,8 +34,6 @@ titlestc:
         .incbin yerz.stc
 
 headchar:
-
-
         .byte   PIPE_HEAD1
 
 playerpos:
