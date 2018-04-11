@@ -38,6 +38,44 @@ initialiseenemies:
     ret
 
 
+initenemytimer:
+    xor     a                   ; reset count
+    ld      (generatimer),a
+
+    ld      a,(level)           ; 0..7
+    and     a
+    rlca
+    rlca
+    rlca                        ; 0..56
+    ld      b,a
+    ld      a,150
+    sub     b
+    ld      (leveltrig),a       ; 150 .. 94
+    ret
+
+
+generateenemy:
+    ld      a,(leveltrig)
+    ld      b,a
+
+    ld      a,(generatimer)
+    inc     a
+    cp      b
+    jr      nz,{+}
+
+    call    startenemy
+    xor     a
+
++:  ld      (generatimer),a
+    ret
+
+
+generatimer:
+    .byte   0
+
+leveltrig:
+    .byte   0
+
 startenemy:
     ld      a,3
     call    AFXPLAY

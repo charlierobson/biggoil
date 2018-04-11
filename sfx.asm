@@ -17,12 +17,11 @@ longplay:
 
 
 initdrone:
-    ld      a,(level)               ; drone rate
+    ld      a,(level)               ; level is 0..7 incl
     rlca
-    rlca
-    rlca
+    rlca                            ; 0 .. 16
     ld      b,a
-    ld      a,40
+    ld      a,40                    ; 40 .. 24
     sub     b
     ld      (dronerate),a
     xor     a

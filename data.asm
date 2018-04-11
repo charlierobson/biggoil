@@ -8,7 +8,15 @@ level2:
 
         .align  1024
 dfile:
-        .repeat 24
+        .repeat 12
+          .byte   076H
+          .fill   32,0
+        .loop
+        .byte   $76
+        .fill   14,0
+        .byte   $3c,$26,$2e,$39
+        .fill   14,0
+        .repeat 11
           .byte   076H
           .fill   32,0
         .loop

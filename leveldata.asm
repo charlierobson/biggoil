@@ -2,9 +2,19 @@
 ;
 .module LEV
 
+levelup:
+	ld		a,(level)
+	inc		a
+	cp		8
+	jr		nz,{+}
+	ld		a,7
++:	ld		(level),a
+	ret
+
+
 displaylevel:
-	ld		a,(level)			; level to HL
-	and		a
+	ld		a,(level)			; level to HL, caps at 8
+	and		3					; cycle of 4 levels, stick on level 4 after 2 cycles
 	rlca
 	or		leveldata & 255
 	ld		l,a

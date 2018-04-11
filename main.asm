@@ -87,7 +87,7 @@ line1:  .byte   0,1
         call    initsfx
         call    installirq
 
-        ld      b,50
+        ld      b,100
 -:      call    framesync               ; give time for crappy LCD tvs to re-sync
         djnz    {-}
 
@@ -153,6 +153,7 @@ restart:
         call    inittimer
 
         call    initialiseenemies
+        call    initenemytimer
 
         call    displaymen
 
@@ -180,9 +181,7 @@ mainloop:
         call    updatecloud
         call    drone
 
-        ld      a,(frames)
-        and     127
-        call    z,startenemy
+        call    generateenemy
 
         ld      a,(frames)
         and     63
@@ -269,14 +268,7 @@ nextlevel:
         call    AFXPLAY
 
         call    tidyup
-
-        ld      a,(level)
-        inc     a
-        cp      4
-        jr      nz,{+}
-        xor     a
-+:      ld      (level),a
-
+        call    levelup
         call    displaylvl
 
         jp      newlevel
