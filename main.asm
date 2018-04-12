@@ -90,7 +90,7 @@ line1:  .byte   0,1
         ld      b,100                   ; give time for crappy LCD tvs to re-sync
         call    waitframes
 
-aaat:
+entitled:
         call    titlescn
 
         xor     a
@@ -170,7 +170,8 @@ _die:
 
         call    gameoverscreen
 
-        jp      titlescn
+        jp      entitled
+
 
 _playon:
         ld      a,(fire)                ; retract happens quickly so check every frame
@@ -365,25 +366,6 @@ _noinvert:
         ld      a,b
         or      c
         jr      nz,_inverter
-        ret
-
-;-------------------------------------------------------------------------------
-
-waitfire:
-        ld      (timeout),a
-
--:      call    framesync
-        call    readinput
-
-        ld      a,(fire)
-        and     3
-        cp      1
-        ret     z
-        
-        ld      a,(timeout)
-        dec     a
-        ld      (timeout),a
-        jr      nz,{-}
         ret
 
 ;-------------------------------------------------------------------------------

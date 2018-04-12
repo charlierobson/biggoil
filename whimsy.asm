@@ -62,12 +62,24 @@ gameoverscreen:
     ld	    (pl_current_position),a
     call    next_pattern
 
+    ld      a,150
+    ld      (timeout),a
+
 _endloop:
     call    framesync
-	ld	    a,(pl_current_position)
-    cp      18
-    jr      nz,_endloop
+    call    readinput
 
-    call    initsfx
-    ld      a,50
-    jp      waitfire
+    ld	    a,(pl_current_position)
+    cp      18
+    call    z,initsfx
+
+    ld      a,(fire)
+    and     3
+    cp      1
+    ret     z
+
+    ld      a,(timeout)
+    dec     a
+    ld      (timeout),a
+    jr      nz,_endloop
+    ret
