@@ -90,45 +90,8 @@ line1:  .byte   0,1
         ld      b,100                   ; give time for crappy LCD tvs to re-sync
         call    waitframes
 
-titlescn:
-        ld      hl,title
-        ld      de,dfile
-        call    decrunch
-        call    displayscoreonts
-        call    displayhionts
-        
-        call    init_stc
-
-_titleloop:
-        call    framesync
-
-        ld      a,(frames)
-        and     15
-        jr      nz,_noflash
-
-        ld      hl,dfile+$303
-        ld      b,10
-_ilop:  ld      a,(hl)
-        xor     $80
-        ld      (hl),a
-        inc     hl
-        djnz    _ilop
-
-_noflash:
-        call    readtitleinput
-
-        ld      a,(redef)               ; redefine when r released
-        and     3
-        cp      2
-        call    z,redefinekeys
-
-        ld      a,(begin)
-        and     3
-        cp      1
-        jr      nz,_titleloop
-
-        call    mute_ay
-        call    initsfx
+aaat:
+        call    titlescn
 
         xor     a
         ld      (level),a
@@ -142,6 +105,8 @@ _noflash:
         ld      (retractqueue-1),a
 
         call    displayscoreline
+
+        call    initsfx
 
 newlevel:
         call    displaylevel
@@ -433,6 +398,7 @@ waitfire:
         .include ayfxplay.asm
         .include leveldata.asm
         .include whimsy.asm
+        .include titlescrn.asm
         .include decrunch.asm
         .include redefinekeys.asm
 

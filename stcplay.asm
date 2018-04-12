@@ -30,6 +30,8 @@ mute_list:
 	;sound every 1/50th second
 					
 init_stc:
+	call	framesync
+	call	mute_ay
     ld      hl,play_stc
     ld      (irqsnd),hl
 	ld      hl,titlestc
