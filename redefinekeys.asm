@@ -18,14 +18,23 @@
 
     .align  64
 _keychar:
-    .asc    "-zxcv"
+    .asc    0,"zxcv"
     .asc    "asdfg"
     .asc    "qwert"
     .asc    "12345"
     .asc    "09876"
     .asc    "poiuy"
-    .asc    "-lkjh"
-    .asc    "-.mnb"
+    .asc    2,"lkjh"
+    .asc    1,".mnb"
+
+_kcs:
+    .word   _ksh,_ksp,_knl
+_ksh:
+    .asc    "shift  ",$ff
+_ksp:
+    .asc    "space  ",$ff
+_knl:
+    .asc    "newline",$ff
 
 _keydata:
 _keymask = $                ; aka mask when ued to detect key
@@ -74,10 +83,34 @@ redefinekeys:
 
     ld      l,a
     ld      a,(hl)
-    ld      (dfile+1),a
+    cp      8
+    jr      c,_isstring
 
+    ld      (dfile+1),a
+    xor     a
+    ld      (dfile+2),a
+    ld      (dfile+3),a
+    ld      (dfile+4),a
+    ld      (dfile+5),a
+    ld      (dfile+6),a
+    ld      (dfile+7),a
     jr      redefinekeys
 
+_isstring:
+    ld      hl,_kcs
+    add     a,a
+    add     a,l
+    ld      l,a
+    ld      a,(hl)
+    inc     hl
+    ld      h,(hl)
+    ld      l,a
+    ld      de,dfile+1
+-:  ldi
+    ld      a,(hl)
+    cp      $ff
+    jr      nz,{-}
+    jr      redefinekeys
 
 getcolbit:
     ld      bc,$0800        ; b is loop count, c is row index
