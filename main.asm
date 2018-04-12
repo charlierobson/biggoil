@@ -73,6 +73,7 @@ WINCH_OFFS = $34
 FUELLING_OFFS = $7a
 TIMER_OFFS = $98
 
+        .include  charmap.asm
 
 ;-------------------------------------------------------------------------------
 
@@ -89,6 +90,8 @@ line1:  .byte   0,1
 
         ld      b,100                   ; give time for crappy LCD tvs to re-sync
         call    waitframes
+
+        call    redefinekeys
 
 titlescn:
         ld      hl,title
@@ -431,6 +434,7 @@ waitfire:
         .include leveldata.asm
         .include whimsy.asm
         .include decrunch.asm
+        .include redefinekeys.asm
 
         .include data.asm
 

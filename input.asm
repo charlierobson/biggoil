@@ -44,20 +44,27 @@ _lastJ:
     .byte   $ff
 
 
+inkbin:
+    ld      de,_kbin
+    ld      bc,$fefe
+    ld      l,8
+
+-:  in      a,(c)
+    rlc     b
+    ld      (de),a
+    inc     de
+
+    dec     l
+    jr      nz,{-}
+    ret
+
+
 readinput:
     ld      bc,$e007        ; initiate a zxpand joystick read
     ld      a,$a0
     out     (c),a
 
-    ld      de,_kbin
-    ld      bc,$fefe
-
-    .repeat 8
-        in      a,(c)
-        rlc     b
-        ld      (de),a
-        inc     de
-    .loop
+    call    inkbin
 
     ld      bc,$e007        ; retrieve joystick byte
     in      a,(c)
