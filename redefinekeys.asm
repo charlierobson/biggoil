@@ -41,33 +41,130 @@ _keymask = $                ; aka mask when ued to detect key
 _keyrow = $+1
     .byte   0,0
 
+_keyaddress:
+    .word   0
+
 _bit2byte:
     .byte   1,2,4,8,16,0
 
+_pkf:
+    .asc    "press key for:"
+_upk:
+    .asc    "    up    "
+_dnk:
+    .asc    "   down   "
+_lfk:
+    .asc    "   left   "
+_rtk:
+    .asc    "   right  "
+_frk:
+    .asc    "   fire   "
+
 redefinekeys:
+
+_waitnor:
+    ld      hl,dfile+$265           ; stash content at bottom of screen
+    ld      de,offscreenmap+$265
+    ld      bc,3*33
+    ldir
+
+    ld      hl,_pkf                 ; install 'press key for:' text
+    ld      de,dfile+$2bf
+    ld      bc,14
+    ldir
+
+    ld      de,up-2
+    ld      hl,_upk
+    call    _redeffit
+
+    ld      de,down-2
+    ld      hl,_dnk
+    call    _redeffit
+
+    ld      de,left-2
+    ld      hl,_lfk
+    call    _redeffit
+
+    ld      de,right-2
+    ld      hl,_rtk
+    call    _redeffit
+    
+    ld      de,fire-2
+    ld      hl,_frk
+    call    _redeffit
+
+    ld      hl,offscreenmap+$265    ; restore bottom of screen
+    ld      de,dfile+$265
+    ld      bc,3*33
+    ldir
+    ret
+
+
+_redeffit:
+    ld      (_keyaddress),de        ; the input data we're altering
+
+    ld      de,dfile+$303           ; copy key text to screen
+    ld      bc,10
+    ldir
+
+_redefloop:
     call    framesync
+    push    iy
+    call    play_stc
+    pop     iy
+
     call    inkbin
     call    getcolbit
     cp      $ff
-    jr      z,redefinekeys
+    jr      z,_redefloop
 
     xor     $ff             ; flip so we have a 1 bit where the key is
 
-    ld      hl,_keydata
-    ld      (hl),a
-    inc     hl
+    ld      hl,(_keyaddress)
     ld      (hl),c
+    inc     hl
+    ld      (hl),a
 
+_redefnokey:
+    call    framesync
+    push    iy
+    call    play_stc
+    pop     iy
+
+    call    inkbin
+    call    getcolbit
+    cp      $ff
+    jr      nz,_redefnokey
+    ret
+
+
+
+
+getcolbit:
+    ld      bc,$0800        ; b is loop count, c is row index
+    ld      hl,INPUT._kbin
+
+-:  ld      a,(hl)          ; byte will have a 0 bit if a key is pressed
+    or      $e0
+    cp      $ff
+    ret     nz
+    inc     c
+    inc     hl
+    djnz    {-}
+    ret
+
+
+
+_showkey:
     ld      hl,_bit2byte
     ld      bc,6
     cpir
     ld      a,b
     or      c
-    jr      z,redefinekeys  ; continue if key bit wasn't found, perhaps 2 keys pressed at once
+    ret      z              ; continue if key bit wasn't found, perhaps 2 keys pressed at once
 
     ld      a,5
     sub     c             ; a is bit number
-    push    af
 
     ld      hl,_keychar
 
@@ -94,7 +191,8 @@ redefinekeys:
     ld      (dfile+5),a
     ld      (dfile+6),a
     ld      (dfile+7),a
-    jr      redefinekeys
+    ret
+
 
 _isstring:
     ld      hl,_kcs
@@ -110,17 +208,4 @@ _isstring:
     ld      a,(hl)
     cp      $ff
     jr      nz,{-}
-    jr      redefinekeys
-
-getcolbit:
-    ld      bc,$0800        ; b is loop count, c is row index
-    ld      hl,INPUT._kbin
-
--:  ld      a,(hl)          ; byte will have a 0 bit if a key is pressed
-    or      $e0
-    cp      $ff
-    ret     nz
-    inc     c
-    inc     hl
-    djnz    {-}
     ret

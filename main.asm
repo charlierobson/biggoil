@@ -91,8 +91,6 @@ line1:  .byte   0,1
         ld      b,100                   ; give time for crappy LCD tvs to re-sync
         call    waitframes
 
-        call    redefinekeys
-
 titlescn:
         ld      hl,title
         ld      de,dfile
@@ -121,8 +119,14 @@ _ilop:  ld      a,(hl)
         djnz    _ilop
 
 _noflash:
-        call    readinput
-        ld      a,(fire)
+        call    readtitleinput
+
+        ld      a,(redef)               ; redefine when r released
+        and     3
+        cp      2
+        call    z,redefinekeys
+
+        ld      a,(begin)
         and     3
         cp      1
         jr      nz,_titleloop
