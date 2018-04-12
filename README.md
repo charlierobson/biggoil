@@ -15,7 +15,7 @@
 * ~~fix race condition potentials~~
 * ~~make 'map' of the level at the start~~
   * ~~either 0 for passable (dot, space) or 128 for impassable~~
-  * ~~player fills map with grey~~å
+  * ~~player fills map with grey~~
   * ~~enemies unplot themselves using map data (no more lost dots, crashing through scenery)~~
 
 ### features:
