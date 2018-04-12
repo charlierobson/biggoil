@@ -5,6 +5,9 @@
 initsfx:
     ld      hl,soundbank
     call    INIT_AFX
+
+    ld      hl,AFXPLAY
+    ld      (irqsnd),hl
     ret
 
 

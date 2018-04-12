@@ -61,10 +61,8 @@ _frk:
     .asc    "   fire   "
 
 redefinekeys:
-
-_waitnor:
-    ld      hl,dfile+$265           ; stash content at bottom of screen
-    ld      de,offscreenmap+$265
+    ld      hl,dfile+$2b5           ; stash content at bottom of screen
+    ld      de,offscreenmap+$2b5
     ld      bc,3*33
     ldir
 
@@ -93,8 +91,11 @@ _waitnor:
     ld      hl,_frk
     call    _redeffit
 
-    ld      hl,offscreenmap+$265    ; restore bottom of screen
-    ld      de,dfile+$265
+    ld      hl,(fire-2)             ; copy fire button definition to title screen input states
+    ld      (begin-2),hl
+
+    ld      hl,offscreenmap+$2b5    ; restore bottom of screen
+    ld      de,dfile+$2b5
     ld      bc,3*33
     ldir
     ret
@@ -109,10 +110,6 @@ _redeffit:
 
 _redefloop:
     call    framesync
-    push    iy
-    call    play_stc
-    pop     iy
-
     call    inkbin
     call    getcolbit
     cp      $ff
@@ -127,10 +124,6 @@ _redefloop:
 
 _redefnokey:
     call    framesync
-    push    iy
-    call    play_stc
-    pop     iy
-
     call    inkbin
     call    getcolbit
     cp      $ff

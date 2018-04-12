@@ -36,45 +36,40 @@ lorryfill:
 
 
 showwinch:
-        ld      a,(winchframe)
-        and     3
-        rlca
-        or      winchanim & 255
-        ld      l,a
-        ld      h,winchanim / 256
-        ld      b,(hl)
-        inc     hl
-        ld      c,(hl)
-        ld      hl,dfile+WINCH_OFFS
-        ld      (hl),b
-        inc     hl
-        ld      (hl),c
-        ret
-    
+    ld      a,(winchframe)
+    and     3
+    rlca
+    or      winchanim & 255
+    ld      l,a
+    ld      h,winchanim / 256
+    ld      b,(hl)
+    inc     hl
+    ld      c,(hl)
+    ld      hl,dfile+WINCH_OFFS
+    ld      (hl),b
+    inc     hl
+    ld      (hl),c
+    ret
+
 
 gameoverscreen: 
     ld      hl,end
     ld      de,dfile
     call    decrunch
 
-    ld      hl,titlestc
+    call    framesync
     call    init_stc
     ld      a,16
     ld	    (pl_current_position),a
     call    next_pattern
 
-    ld      a,63
-    ld      (timeout),a
-
 _endloop:
     call    framesync
-    push    iy
-    call    play_stc
-    pop     iy
 	ld	    a,(pl_current_position)
     cp      18
     jr      nz,_endloop
 
     call    mute_stc
-    ld      a,150  
+    call    initsfx
+    ld      a,50
     jp      waitfire

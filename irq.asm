@@ -1,6 +1,7 @@
 installirq:
 	ld	ix,relog
 	ld	(iy+$34),$ff
+_dummy:
 	ret
 
 relog:
@@ -12,9 +13,10 @@ relog:
 	call	$0220
 
 	; do here
-        push    iy
-        call    AFXFRAME
-        pop     iy
+	push    iy
+irqsnd = $+1
+	call    _dummy
+	pop     iy
 
 +:	ld      ix,relog
 	jp      $02a4
