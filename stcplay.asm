@@ -29,7 +29,11 @@ mute_list:
 	;for intterupt driven
 	;sound every 1/50th second
 					
-init_stc:	  
+init_stc:
+    ld      hl,play_stc
+    ld      (irqsnd),hl
+	ld      hl,titlestc
+
 ;stc_stuff
 	ld	a,(hl)									;get delay value
 	ld	(pl_delay_value),a							;store it

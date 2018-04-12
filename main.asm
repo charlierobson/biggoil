@@ -73,6 +73,7 @@ WINCH_OFFS = $34
 FUELLING_OFFS = $7a
 TIMER_OFFS = $98
 
+        .include  charmap.asm
 
 ;-------------------------------------------------------------------------------
 
@@ -84,7 +85,6 @@ line1:  .byte   0,1
 ;
 .module A_MAIN
         call    seedrnd
-        call    initsfx
         call    installirq
 
         ld      b,100                   ; give time for crappy LCD tvs to re-sync
@@ -96,14 +96,11 @@ titlescn:
         call    decrunch
         call    displayscoreonts
         call    displayhionts
-        ld      hl,titlestc
+        
         call    init_stc
 
 _titleloop:
         call    framesync
-        push    iy
-        call    play_stc
-        pop     iy
 
         ld      a,(frames)
         and     15
@@ -118,8 +115,14 @@ _ilop:  ld      a,(hl)
         djnz    _ilop
 
 _noflash:
-        call    readinput
-        ld      a,(fire)
+        call    readtitleinput
+
+        ld      a,(redef)               ; redefine when r released
+        and     3
+        cp      2
+        call    z,redefinekeys
+
+        ld      a,(begin)
         and     3
         cp      1
         jr      nz,_titleloop
@@ -402,7 +405,6 @@ _noinvert:
 ;-------------------------------------------------------------------------------
 
 waitfire:
-        xor     a
         ld      (timeout),a
 
 -:      call    framesync
@@ -432,6 +434,7 @@ waitfire:
         .include leveldata.asm
         .include whimsy.asm
         .include decrunch.asm
+        .include redefinekeys.asm
 
         .include data.asm
 

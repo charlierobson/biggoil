@@ -42,7 +42,7 @@
   * level begin jingle
   * level complete jingle
   * ~~title screen~~
-  * game over screen
+  * ~~game over screen~~
 
 ### whimsy
 * ~~cloud animation~~

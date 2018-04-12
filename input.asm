@@ -20,19 +20,29 @@
 ; key mask, or $ff/%11111111 for no key
 ; trigger impulse
 
+titleinputstates:
+    .byte	%00001000,7,%00000001,0        ; startgame   (SP)
+    .byte	%10000000,2,%00001000,0        ; redefine    (R)
+    .byte	%11111111,1,%11111111,0
+    .byte	%11111111,7,%11111111,0
+    .byte	%11111111,7,%11111111,0
+
 inputstates:
+    .byte	%00001000,7,%00000001,0        ; fire    (SP)
     .byte	%10000000,2,%00000001,0        ; up      (Q)
     .byte	%01000000,1,%00000001,0        ; down    (A)
-    .byte	%00100000,7,%00001000,0        ; left    (N)
-    .byte	%00010000,7,%00000100,0        ; right   (M)
-    .byte	%00001000,7,%00000001,0        ; fire    (SP)
+    .byte	%00100000,5,%00000010,0        ; left    (O)
+    .byte	%00010000,5,%00000001,0        ; right   (P)
 
 ; calculate actual input impulse addresses
-up       = inputstates + 3
-down     = inputstates + 7
-left     = inputstates + 11
-right    = inputstates + 15
-fire     = inputstates + 19
+;
+begin    = titleinputstates + 3
+redef    = titleinputstates + 7
+fire     = inputstates + 3
+up       = inputstates + 7
+down     = inputstates + 11
+left     = inputstates + 15
+right    = inputstates + 19
 
 ; kbin is filled by the display interrupt
 
@@ -44,20 +54,34 @@ _lastJ:
     .byte   $ff
 
 
+inkbin:
+    ld      de,_kbin
+    ld      bc,$fefe
+    ld      l,8
+
+-:  in      a,(c)
+    rlc     b
+    ld      (de),a
+    inc     de
+
+    dec     l
+    jr      nz,{-}
+    ret
+
+
+readtitleinput:
+    ld      hl,titleinputstates
+    jr      _ri
+
 readinput:
+    ld      hl,inputstates
+_ri:
+    push    hl
     ld      bc,$e007        ; initiate a zxpand joystick read
     ld      a,$a0
     out     (c),a
 
-    ld      de,_kbin
-    ld      bc,$fefe
-
-    .repeat 8
-        in      a,(c)
-        rlc     b
-        ld      (de),a
-        inc     de
-    .loop
+    call    inkbin
 
     ld      bc,$e007        ; retrieve joystick byte
     in      a,(c)
@@ -66,7 +90,7 @@ readinput:
     ; point at first input state block,
     ; return from update function pointing to next
     ;
-    ld      hl,inputstates
+    pop     hl
     call    updateinputstate ; (up)
     call    updateinputstate ; (down)
     call    updateinputstate ;  etc.
