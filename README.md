@@ -10,8 +10,8 @@
 * ~~enemies erase non-solid inverse characters~~
 
 ### engine
-* ~~non-interruptable SFX~~
 * rom dependency removal via custom irq handler
+* ~~non-interruptable SFX~~
 * ~~fix race condition potentials~~
 * ~~make 'map' of the level at the start~~
   * ~~either 0 for passable (dot, space) or 128 for impassable~~
@@ -19,8 +19,8 @@
   * ~~enemies unplot themselves using map data (no more lost dots, crashing through scenery)~~
 
 ### features:
-* difficulty ramp
-  * enemy spawn rate increases every level
+* ~~difficulty ramp~~
+  * ~~enemy spawn rate increases every level~~
   * ~~enemy speed~~
 * pick-ups
   * slow enemies
