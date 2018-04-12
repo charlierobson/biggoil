@@ -3,11 +3,12 @@
 .module SFX
 
 initsfx:
+    call    framesync
+    call    mute_ay
+    ld      hl,AFXFRAME
+    ld      (irqsnd),hl
     ld      hl,soundbank
     call    INIT_AFX
-
-    ld      hl,AFXPLAY
-    ld      (irqsnd),hl
     ret
 
 

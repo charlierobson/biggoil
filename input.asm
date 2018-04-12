@@ -44,8 +44,6 @@ down     = inputstates + 11
 left     = inputstates + 15
 right    = inputstates + 19
 
-; kbin is filled by the display interrupt
-
     .align  8
 _kbin:
     .fill   8

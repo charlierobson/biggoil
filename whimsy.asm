@@ -57,7 +57,6 @@ gameoverscreen:
     ld      de,dfile
     call    decrunch
 
-    call    framesync
     call    init_stc
     ld      a,16
     ld	    (pl_current_position),a
@@ -69,7 +68,6 @@ _endloop:
     cp      18
     jr      nz,_endloop
 
-    call    mute_stc
     call    initsfx
     ld      a,50
     jp      waitfire

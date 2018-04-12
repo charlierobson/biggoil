@@ -37,7 +37,7 @@
   * ~~enemies~~
 * ~~title screen~~
 * ~~game over screen~~
-* control customisation
+* ~~control customisation~~
 * music:
   * level begin jingle
   * level complete jingle
