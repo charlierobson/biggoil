@@ -75,5 +75,6 @@ _endloop:
     cp      18
     jr      nz,_endloop
 
-    call    mute_stc    
+    call    mute_stc
+    ld      a,150  
     jp      waitfire
