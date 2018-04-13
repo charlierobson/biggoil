@@ -1,6 +1,9 @@
         ; AIMING TO HAVE DFILE AT $5000
 
         .align  1024
+.if $ != $5000
+.fail "DFILE needs to be at $x000 boundary"
+.endif
 dfile:
         .repeat 12
           .byte   076H
@@ -47,6 +50,9 @@ scoreline:
 	.byte	$38, $28, $34, $37, $2a, $0e, $1c, $1c, $1c, $1c, $1c, $00, $2d, $2e, $0e, $1c, $1c, $1c, $1c, $1c, $00, $31, $3b, $31, $0e, $1d, $00, $32, $2a, $33, $0e, $20
 
         .align  1024
+.if $ != $5400
+.fail "offscreen map needs to be at $x400 boundary"
+.endif
 offscreenmap:
         .fill   33*24
 
