@@ -13,8 +13,8 @@ levelup:
 
 
 displaylevel:
-	ld		a,(level)			; level to HL, caps at 8
-	and		3					; cycle of 4 levels, stick on level 4 after 2 cycles
+	ld		a,(level)			    ; level to HL, caps at 8
+	and		3					    ; cycle of 4 levels, stick on level 4 after 2 cycles
 	rlca
 	or		leveldata & 255
 	ld		l,a
@@ -64,7 +64,7 @@ _c1:
 	ld		(_adval0),a
 	ld		a,enemyanimL2R
 	ld		(_animnum),a
-	ld		de,dfile+$c7-33		; start checking at row 5
+	ld		de,dfile+$c7-33		    ; start checking at row 5
 	call	checkcolumn
 
 _c2:
