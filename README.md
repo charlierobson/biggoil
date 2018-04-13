@@ -2,17 +2,21 @@
 
 ### Fast action game for 16K ZX81.
 
-_UDLR / FIRE_
+Pure machine code action FTW.
+
+Default controls:
+
+_UDLR / FIRE_  
 QAOP / SPACE 
 
-### Program enhanced features:
+### Enhanced features:
 
 * Music and sound effects.
   * ZonX compatible AY chip is required, E.G. Mr.X, ZXpand+, ZXPand+AY
 * Joystick control
   * ZXpand+, ZXpand+AY standard.
 
-All game and artifact handling code by Sir Morris Bigg.
+All game and artifact handling code by Sir Morris Bigg.  
 STC music player by Andy Rea.
 
 
@@ -68,3 +72,5 @@ ___
 
 ### enemy behaviour
 * ~~turn around when obstructed~~
+
+If you're reading this well done! The ZX81 scene is dead. Long live the ZX81 scene.
