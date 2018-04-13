@@ -1,6 +1,23 @@
 # biggoil
 
-## todo:
+### Fast action game for 16K ZX81.
+
+_UDLR / FIRE_
+QAOP / SPACE 
+
+### Program enhanced features:
+
+* Music and sound effects.
+  * ZonX compatible AY chip is required, E.G. Mr.X, ZXpand+, ZXPand+AY
+* Joystick control
+  * ZXpand+, ZXpand+AY standard.
+
+All game and artifact handling code by Sir Morris Bigg.
+STC music player by Andy Rea.
+
+
+### Archived development log
+___
 
 ### bugs:
 * ~~pipe turns are broken after retracting~~
@@ -32,8 +49,8 @@
 * ~~sound~~
 * ~~extra lives~~
 * different enemy types
-* character tables (and hence UDG possibility) for:
-  * boring head
+* character animation tables (and hence UDG possibility) for:
+  * ~~boring head~~
   * ~~enemies~~
 * ~~title screen~~
 * ~~game over screen~~
