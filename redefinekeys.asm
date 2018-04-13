@@ -51,15 +51,15 @@ _bit2byte:
 _pkf:
 	.asc	"press key for:"
 _upk:
-	.asc	"		up		"
+	.asc	"    up    "
 _dnk:
-	.asc	"	down	"
+	.asc	"   down   "
 _lfk:
-	.asc	"	left	"
+	.asc	"   left   "
 _rtk:
-	.asc	"	right  "
+	.asc	"   right  "
 _frk:
-	.asc	"	fire	"
+	.asc	"   fire   "
 
 redefinekeys:
 	ld		hl,dfile+$2b5			; stash content at bottom of screen
