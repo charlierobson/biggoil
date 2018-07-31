@@ -4,6 +4,8 @@
 
 Pure machine code action FTW.
 
+Collect the oil from the underground tunnels. Do not let the enemies touch the pipe that you pull along behind you. Enemies self-destruct upon contact with the drill head.
+
 Default controls:
 
 _UDLR / FIRE_  
@@ -18,6 +20,10 @@ QAOP / SPACE
 
 All game and artifact handling code by Sir Morris Bigg.  
 STC music player by Andy Rea.
+
+(Sketchy)[https://charlierobson.github.io/p5-sketchy/]
+(AYFXEdit)[https://shiru.untergrund.net/software.shtml]
+(BRASS)[http://www.benryves.com/bin/brass/]
 
 
 ### Archived development log
