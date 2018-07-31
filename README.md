@@ -11,6 +11,8 @@ Default controls:
 _UDLR / FIRE_  
 QAOP / SPACE 
 
+Redefine keys on title screen.
+
 ### Enhanced features:
 
 * Music and sound effects.
@@ -21,9 +23,11 @@ QAOP / SPACE
 All game and artifact handling code by Sir Morris Bigg.  
 STC music player by Andy Rea.
 
-(Sketchy)[https://charlierobson.github.io/p5-sketchy/]
-(AYFXEdit)[https://shiru.untergrund.net/software.shtml]
-(BRASS)[http://www.benryves.com/bin/brass/]
+[Sketchy](https://charlierobson.github.io/p5-sketchy)
+
+[AYFXEdit](https://shiru.untergrund.net/software.shtml)
+
+[BRASS](http://www.benryves.com/bin/brass)
 
 
 ### Archived development log
