@@ -95,12 +95,6 @@ hiscore:
 lives:
 	.byte   0
 
-MINUS = $16
-ERLCHAR = $12
-ELRCHAR = $13
-
-enemyanimL2R = 0
-enemyanimR2L = 1
 
 	.word   0               ; padding byte - do not remove
 	.align  256
