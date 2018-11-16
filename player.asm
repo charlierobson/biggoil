@@ -98,9 +98,6 @@ _intothevoid:
 	xor		a
 	ret
 
-psound:
-	.byte	0
-
 
 retract:
 	ld		hl,(retractptr)				; because the retract buffer sits on a 256 byte

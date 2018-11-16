@@ -166,10 +166,20 @@ timeout:
 fuelchar:
 	.byte   FUEL1
 
-START1 = 0
-LEN1 = 18
-START2 = 23
-LEN2 = 10
+lx:
+	.byte	0
+
 cldfrm:
 	.byte   0
 
+generatimer:
+	.byte	0
+
+leveltrig:
+	.byte	0
+
+rndseed:
+    .word   0
+
+psound:
+	.byte	0

@@ -89,5 +89,3 @@ copykey:
 	pop		hl
 	jr		nextsequence
 
-lx:
-	.byte	0

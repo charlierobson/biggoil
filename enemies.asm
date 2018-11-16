@@ -2,23 +2,12 @@
 ;
 .module ENEMIES
 
-NENEMIES = 10
-
-EO_ENA = 0	; enemy enable 1 = active
-EO_ADL = 1	; screen address lo
-EO_ADH = 2	; screen address hi
-EO_MDL = 3	; move delta lo
-EO_MDH = 4	; move delta hi
-EO_ANL = 5	; animation ptr lo
-EO_ANH = 6	; animation ptr hi
-EO_FNO = 7	; frame num
-
 initialiseenemies:
 	ld		iy,$4000
 
 	ld		hl,enemydata
 	ld		de,enemydata+1
-	ld		bc,64*10-1
+	ld		bc,ENEMYSIZE*NENEMIES-1
 	ld		(hl),0
 	ldir
 
@@ -70,19 +59,12 @@ generateenemy:
 	ret
 
 
-generatimer:
-	.byte	0
-
-leveltrig:
-	.byte	0
-
-
 startenemy:
 	ld		a,3
 	call	AFXPLAY
 
 	xor		a
-	ld		de,64
+	ld		de,ENEMYSIZE
 	ld		b,NENEMIES
 
 	ld		iy,enemydata
@@ -149,7 +131,7 @@ updateenemies:
 	ld		iy,enemydata
 	jr		{+}
 
--:	ld		de,64					; de is corrupted in call so need to re-init
+-:	ld		de,ENEMYSIZE			; de is corrupted in call so need to re-init
 	add		iy,de
 +:	ld		a,(iy)
 	cp		1
@@ -256,10 +238,10 @@ _edied:
 
 
 resetenemies:
-	ld		iy,enemydata-64
+	ld		iy,enemydata-ENEMYSIZE
 	ld		b,NENEMIES
 
--:	ld		de,64
+-:	ld		de,ENEMYSIZE
 	add		iy,de
 	ld		a,(iy)
 	cp		1
@@ -274,50 +256,4 @@ resetenemies:
 	ld		(hl),a
 
 +:	djnz	{-}
-	ret
-
-
-
-seedrnd:
-	ld		a,r
-	and		a
-	jr		z,seedrnd
-	ld		l,a
-	ld		a,r
-	ld		h,a
-	ld		(_seedaddr),hl
-	ret
-
-
-xrnd8:
-	ld		a,(_seedaddr)
-	ld		c,a
-	rrca
-	rrca
-	rrca
-	xor		$1f
-	add		a,c
-	sbc		a,255
-	ld		(_seedaddr),a
-	ret
-
-
-xrnd16:
-_seedaddr = $+1
-	ld		hl,1					; seed must not be 0
-	ld		a,h
-	rra
-	ld		a,l
-	rra
-	xor		h
-	ld		h,a
-	ld		a,l
-	rra
-	ld		a,h
-	rra
-	xor		l
-	ld		l,a
-	xor		h
-	ld		h,a
-	ld		(_seedaddr),hl
 	ret
