@@ -13,7 +13,7 @@ QAOP / SPACE
 
 Redefine keys on title screen.
 
-[DOWNLOAD](https://github.com/charlierobson/biggoil/blob/master/biggoil.p)
+[DOWNLOAD](https://github.com/charlierobson/biggoil/raw/master/biggoil.p)
 
 ### Enhanced features:
 
