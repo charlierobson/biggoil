@@ -4,7 +4,9 @@
 
 Pure machine code action FTW.
 
-Collect the oil from the underground tunnels. Do not let the enemies touch the pipe that you pull along behind you. Enemies self-destruct upon contact with the drill head.
+* Collect the oil from the underground tunnels.
+* Do not let the enemies touch the pipe that you pull along behind you.
+* Enemies self-destruct upon contact with the drill head.
 
 Default controls:
 
