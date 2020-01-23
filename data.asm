@@ -95,12 +95,6 @@ hiscore:
 lives:
 	.byte   0
 
-MINUS = $16
-ERLCHAR = $12
-ELRCHAR = $13
-
-enemyanimL2R = 0
-enemyanimR2L = 1
 
 	.word   0               ; padding byte - do not remove
 	.align  256
@@ -166,10 +160,20 @@ timeout:
 fuelchar:
 	.byte   FUEL1
 
-START1 = 0
-LEN1 = 18
-START2 = 23
-LEN2 = 10
+lx:
+	.byte	0
+
 cldfrm:
 	.byte   0
 
+generatimer:
+	.byte	0
+
+leveltrig:
+	.byte	0
+
+rndseed:
+    .word   0
+
+psound:
+	.byte	0
