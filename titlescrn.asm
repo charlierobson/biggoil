@@ -54,6 +54,11 @@ _noflash:
 	cp		  2
 	call		z,redefinekeys
 
+	ld		  a,(instr)				; show instruction screen with I
+	and		 3
+	cp		  2
+	call		z,instructions
+
 	ld		  a,(begin)
 	and		 3
 	cp		  1

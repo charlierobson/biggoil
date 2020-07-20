@@ -10,7 +10,7 @@ instructions:
 	ld		hl,0
 	ld		(frames),hl
 
-;	ld		hl,help
+	ld		hl,help
 	ld		de,dfile
 	call	decrunch
 
