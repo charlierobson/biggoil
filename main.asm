@@ -85,6 +85,7 @@ line1:
 	.include whimsy.asm
 	.include titlescrn.asm
 	.include gameoverscrn.asm
+	.include instructionscrn.asm
 	.include decrunch.asm
 	.include redefinekeys.asm
 	.include data.asm

@@ -2,7 +2,7 @@
 
 	.align  1024
 .if $ != $5000
-.fail "DFILE needs to be at $x000 boundary"
+.warn "DFILE needs to be at $x000 boundary"
 .endif
 dfile:
 	.repeat 12
@@ -51,7 +51,7 @@ scoreline:
 
 	.align  1024
 .if $ != $5400
-.fail "offscreen map needs to be at $x400 boundary"
+.warn "offscreen map needs to be at $x400 boundary"
 .endif
 offscreenmap:
 	.fill   33*24
@@ -95,6 +95,10 @@ hiscore:
 lives:
 	.byte   0
 
+eeaten:
+    .byte   0
+eexited:
+    .byte   0
 
 	.word   0               ; padding byte - do not remove
 	.align  256
@@ -136,6 +140,7 @@ entrancecount:
 level:
 	.byte	0
 
+
 level1:
 	.incbin lvl1.binlz
 
@@ -153,6 +158,9 @@ title:
 
 end:
 	.incbin end.binlz
+
+help:
+	.incbin instructions.binlz
 
 timeout:
 	.byte   0
@@ -177,3 +185,5 @@ rndseed:
 
 psound:
 	.byte	0
+
+#include "redefinekeysdata.asm"

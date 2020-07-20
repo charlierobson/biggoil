@@ -4,14 +4,14 @@
 
 ; -----  4  3  2  1  0
 ;
-; $FE -  V, C, X, Z, SH	0
-; $FD -  G, F, D, S, A	1
-; $FB -  T, R, E, W, Q	2
-; $F7 -  5, 4, 3, 2, 1	3
-; $EF -  6, 7, 8, 9, 0	4
-; $DF -  Y, U, I, O, P	5
-; $BF -  H, J, K, L, NL	6
-; $7F -  B, N, M, ., SP	7
+; $FE -  V, C, X, Z, SH	  0  11111110
+; $FD -  G, F, D, S, A	  1  11111101
+; $FB -  T, R, E, W, Q	  2  11111011
+; $F7 -  5, 4, 3, 2, 1	  3  11110111
+; $EF -  6, 7, 8, 9, 0	  4  11101111
+; $DF -  Y, U, I, O, P	  5  11011111
+; $BF -  H, J, K, L, NL	  6  10111111
+; $7F -  B, N, M, ., SP	  7  01111111
 ;
 ; input state data:
 ;
@@ -21,15 +21,15 @@
 ; trigger impulse
 
 titleinputstates:
-	.byte	%00001000,7,%00000001,0		; startgame	(SP)
-	.byte	%10000000,2,%00001000,0		; redefine	(R)
-	.byte	%11111111,1,%11111111,0
+	.byte	%00001000,7,%00000001,0		; startgame	    (SP)
+	.byte	%10000000,2,%00001000,0		; redefine	    (R)
+	.byte	%11111111,5,%00000100,0		; instructions  (I)
 	.byte	%11111111,7,%11111111,0
 	.byte	%11111111,7,%11111111,0
 
 inputstates:
 	.byte	%00001000,7,%00000001,0		; fire	(SP)
-	.byte	%10000000,2,%00000001,0		; up		(Q)
+	.byte	%10000000,2,%00000001,0		; up    (Q)
 	.byte	%01000000,1,%00000001,0		; down	(A)
 	.byte	%00100000,5,%00000010,0		; left	(O)
 	.byte	%00010000,5,%00000001,0		; right	(P)
@@ -38,6 +38,8 @@ inputstates:
 ;
 begin	= titleinputstates + 3
 redef	= titleinputstates + 7
+instr	= titleinputstates + 11
+
 fire	= inputstates + 3
 up		= inputstates + 7
 down	= inputstates + 11

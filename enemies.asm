@@ -11,6 +11,10 @@ initialiseenemies:
 	ld		(hl),0
 	ldir
 
+    xor     a
+    ld      (eeaten),a
+    ld      (eexited),a
+
 	ld		a,(margin)
 	ld		b,NENEMIES
 	ld		hl,enemydata-5			; -3 because I use a cheat to offset to the MARGIN address
@@ -231,11 +235,16 @@ _ediedwithscore:
 	ld		(scoretoadd),a
 	ld		a,14
 	call	AFXPLAY
+    ld      hl,eexited          ; pre-correct the 'escapee' count
+    dec     (hl)                ; 
+    ld      hl,eeaten           ; omnomnom
+    inc     (hl)
 
 _edied:
+    ld      hl,eexited          ; escapees (special bonus #01) count
+    inc     (hl)
 	dec		(iy)
 	ret
-
 
 resetenemies:
 	ld		iy,enemydata-ENEMYSIZE
