@@ -21,6 +21,9 @@ newlevel:
 
 	call	initdrone
 
+    xor     a
+    ld      (BONUSES._deathsPerLevel),a
+
 restart:
 	ld		a,$99
 	ld		(timerv),a
@@ -68,6 +71,9 @@ mainloop:
 	jr		z,_playon
 
 _die:
+    ld      hl,BONUSES._deathsPerLevel
+    inc     (hl)
+
 	call	loselife
 	jp		nz,restart
 
@@ -142,9 +148,6 @@ _headupdate:
 
 	call	lorryfill
 
-;	call	countdots
-;	jp		nz,mainloop
-
     call    detectdot
     jp      z,mainloop
 
@@ -153,6 +156,9 @@ nextlevel:
 	call	AFXPLAY
 
 	call	tidyup
+
+    call    displayBonuses
+
 	call	levelup
 	call	displaylvl
 

@@ -12,8 +12,8 @@ initialiseenemies:
 	ldir
 
     xor     a
-    ld      (eeaten),a
-    ld      (eexited),a
+    ld      (BONUSES._eeaten),a
+    ld      (BONUSES._eexited),a
 
 	ld		a,(margin)
 	ld		b,NENEMIES
@@ -235,13 +235,13 @@ _ediedwithscore:
 	ld		(scoretoadd),a
 	ld		a,14
 	call	AFXPLAY
-    ld      hl,eexited          ; pre-correct the 'escapee' count
+    ld      hl,BONUSES._eexited ; pre-correct the 'escapee' count
     dec     (hl)                ; 
-    ld      hl,eeaten           ; omnomnom
+    ld      hl,BONUSES._eeaten  ; omnomnom
     inc     (hl)
 
 _edied:
-    ld      hl,eexited          ; escapees (special bonus #01) count
+    ld      hl,BONUSES._eexited ; escapees (special bonus #01) count
     inc     (hl)
 	dec		(iy)
 	ret

@@ -42,6 +42,11 @@ winchanim:
 winchframe:
 	.byte   0
 
+bonusdefs:
+    .word   BONUSES._deathsPerLevel,BONUSES._byteEqualsZero
+    .word   BONUSES._eexited,BONUSES._byteEqualsZero
+
+
 	.align	128
 entrances:
 	.fill	12*8,0          ; up to 10 entrances, 8 bytes apiece
@@ -94,11 +99,6 @@ hiscore:
 
 lives:
 	.byte   0
-
-eeaten:
-    .byte   0
-eexited:
-    .byte   0
 
 	.word   0               ; padding byte - do not remove
 	.align  256

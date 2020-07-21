@@ -16,6 +16,6 @@
     .asciimap ';',';',$19
     .asciimap ',',',',$1a
     .asciimap '.','.',$1b
-    .asciimap '0','9',{*}-'9'+$1c
+    .asciimap '0','9',{*}-'0'+$1c
     .asciimap 'a','z',{*}-'a'+$26
     .asciimap 'A','Z',{*}-'A'+$26

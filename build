@@ -14,5 +14,5 @@ compress lvl4
 
 mono /usr/local/bin/Brass.exe main.asm biggoil.p -s -l biggoil.html
 
-cp biggoil.p zxpandsdcard/menu.p
-cp biggoil.p.sym zxpandsdcard/menu.p.sym
+cp biggoil.p ~/Documents/EightyOne/ZXpand_SD_Card/MENU.p
+cp biggoil.p.sym ~/Documents/EightyOne/ZXpand_SD_Card/MENU.p.sym

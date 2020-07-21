@@ -75,6 +75,7 @@ line1:
 	.include player.asm
 	.include enemies.asm
 	.include score.asm
+	.include bonuses.asm
 	.include input.asm
 	.include random.asm
 	.include sfx.asm

@@ -8,14 +8,15 @@ _tt2:
 	.asc	"r:redefine"
 
 titlescn:
+	call	init_stc
+
+_titleredraw:
 	ld		hl,title
 	ld		de,dfile
 	call	decrunch
 	call	displayscoreonts
 	call	displayhionts
 	
-	call	init_stc
-
 _titleloop:
 	call	framesync
 
@@ -52,13 +53,19 @@ _noflash:
 	ld		  a,(redef)				; redefine when r released
 	and		 3
 	cp		  2
-	call		z,redefinekeys
+	jr      nz,{+}
+    call		redefinekeys
+    jr      _titleloop
 
++:
 	ld		  a,(instr)				; show instruction screen with I
 	and		 3
 	cp		  2
-	call		z,instructions
+	jr      nz,{+}
+	call		instructions
+    jr      _titleredraw
 
++:
 	ld		  a,(begin)
 	and		 3
 	cp		  1
