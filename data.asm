@@ -45,6 +45,7 @@ winchframe:
 bonusdefs:
     .word   BONUSES._deathsPerLevel,BONUSES._byteEqualsZero
     .word   BONUSES._eexited,BONUSES._byteEqualsZero
+    .word   BONUSES._eeaten,BONUSES._byteGreaterThan50
 
 
 	.align	128
@@ -105,7 +106,6 @@ lives:
 retractqueue:
 	.fill   256,$ff
 
-	.align  256
 enemydata:
 	.fill   64*10,0         ; 10 enemies of 64 bytes each
 
@@ -185,5 +185,12 @@ rndseed:
 
 psound:
 	.byte	0
+
+backmsg:
+;         --------========--------========
+	.asc "hit fire to go back             "
+
+bonustext:
+    .asc    "secret bonus: 00"
 
 #include "redefinekeysdata.asm"

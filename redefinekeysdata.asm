@@ -16,31 +16,6 @@
 ;		 js mask	row	kb mask  -
 ; .byte	%10000000, 2, %00000001, 0  ; up (Q)
 
-	.align  64
-_keychar:
-	.asc	0,"zxcv"
-	.asc	"asdfg"
-	.asc	"qwert"
-	.asc	"12345"
-	.asc	"09876"
-	.asc	"poiuy"
-	.asc	2,"lkjh"
-	.asc	1,".mnb"
-
-_kcs:
-	.word	_ksh,_ksp,_knl
-_ksh:
-	.asc	"shift  ",$ff
-_ksp:
-	.asc	"space  ",$ff
-_knl:
-	.asc	"newline",$ff
-
-_keydata:
-_keymask = $						; aka mask when ued to detect key
-_keyrow = $+1
-	.byte	0,0
-
 _keyaddress:
 	.word	0
 

@@ -208,7 +208,7 @@ AFXPLAY:
 	push    hl
 	push    bc
 	push    de
-	dec		a
+	dec		a   ; input matches fx number in ayfxedit
 	ld		de,0					; in DE the longest time in search
 	ld		h,e
 	ld		l,a
