@@ -13,7 +13,6 @@ initialiseenemies:
 
     xor     a
     ld      (BONUSES._eeaten),a
-    ld      (BONUSES._eexited),a
 
 	ld		a,(margin)
 	ld		b,NENEMIES
@@ -121,7 +120,7 @@ _ehstart:
 
 	inc		hl
 	ld		a,(hl)					; animation number
-	and		a
+	and		a                       ; clear carry
 	rlca
 	or		enemyanims & 255
 	ld		(iy+EO_ANL),a

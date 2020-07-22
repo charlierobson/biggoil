@@ -1,35 +1,52 @@
 .module BONUSES
 
 displayBonuses:
+    ld      a,1                 ; no discernable pause
+    ld      (_eobdp),a
+
     ld      hl,bonusdefs
-    ld      bc,$0301            ; b = bonus count, c = bonus number
+    ld      bc,$0601            ; b = bonus count, c = initial bonus number
 
 -:  push    bc
     push    hl
     call    _checkAndDisplay
     pop     hl
-    ld      de,4
+    ld      de,6
     add     hl,de
     pop     bc
-    inc     c
+    inc     c                   ; next bonus number to check
     djnz    {-}
-    ret
 
+    ld      a,(_eobdp)          ; if any bonuses were hit we pause here a second or 2
+    ld      b,a
+    jp      waitframes
 
 
 _checkAndDisplay:
-    ld      e,(hl)      ; de - address of data to check
+    ld      a,(hl)
+    ld      (_bonus),a
     inc     hl
-    ld      d,(hl)
+    ld      a,(hl)
+    push    af          ; stash compare value
     inc     hl
-    ld      a,(hl)      ; hl - fn to check
+    ld      a,(hl)      ; address of compare fn
+    ld      (_comparer+1),a
+    inc     hl
+    ld      a,(hl)
+    ld      (_comparer+2),a
+    ld      a,(hl)      ; hl - data address to check
     inc     hl
     ld      h,(hl)
     ld      l,a
-    call    jphl
-    ret     nz          ; not triggered
+    pop     af
+_comparer:
+    call    0
+    ret     nz           ; no points to add
 
 _displayBonus:
+    ld      a,50        ; delay after showinf the bonuses
+    ld      (_eobdp),a
+
     ld      a,ZEROZ
     add     a,c
     ld      (bonustext+15),a
@@ -48,14 +65,14 @@ _displayBonus:
     ld      bc,16
     ldir
 
-    ld      a,$25
+    ld      a,(_bonus)
     call    _bcdout
     ld      a,ZEROZ
-    ld      (dfile+$17c),a
+    ld      (dfile+$17d),a
     ld      b,8
     call    waitframes
 
-    ld      a,$25
+    ld      a,(_bonus)
 
 -:  dec     a
     daa
@@ -107,29 +124,26 @@ _drline:
     ret
 
 
-jphl:
-    jp      (hl)
 
+_byteEQ:
+    cp      (hl)
+    ret     z           ; return with z if bonus is coming
 
-_byteEqualsZero:
-    ld      a,(de)
-    or      a
+_nope:
+    or      $ff         ; nz if no bonus
     ret
 
-
-_byteGreaterThan50:
-    ld      a,(de)
-    cp      50
-    ld      a,0     ; if >= 50
-    jr      nc,{+}
-    ld      a,1     ; if < 50
-+:  or      a       ; ret with z if < 50
+_yep:
+    xor     a
     ret
 
+_byteGE:
+    cp      (hl)
+    jr      nc,_yep
+    jr      _nope
 
-_deathsPerLevel:
-    .byte   0
-_eeaten:
-    .byte   0
-_eexited:
-    .byte   0
+
+_byteLT:
+    cp      (hl)
+    jr      c,_yep
+    jr      _nope

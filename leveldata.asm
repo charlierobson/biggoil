@@ -19,10 +19,12 @@ displaylevel:
 	ld		a,(level)			    ; level to HL, caps at 8
 	and		3					    ; cycle of 4 levels, stick on level 4 after 2 cycles
 	rlca
-	or		leveldata & 255
-	ld		l,a
-	ld		h,leveldata / 256
-	ld		a,(hl)
+    ld      hl,leveldata
+    add     a,l
+    ld      l,a
+    jr      nc,{+}
+    inc     h
++:  ld		a,(hl)
 	inc		hl
 	ld		h,(hl)
 	ld		l,a

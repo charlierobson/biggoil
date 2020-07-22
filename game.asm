@@ -1,3 +1,29 @@
+stats:
+    ld      a,(BONUSES._deathsPerLevel)
+    ld      de,dfile + 1
+    call    hexout
+
+    ld      a,(BONUSES._eexited)
+    ld      de,dfile + 4
+    call    hexout
+
+    ld      a,(BONUSES._eeaten)
+    ld      de,dfile + 7
+
+hexout:
+    push    af
+    rra
+    rra
+    rra
+    rra
+    call    {+}
+    pop     af
++:  and     $f
+    add     a,$1c
+    ld      (de),a
+    inc     de
+    ret
+
 game:
 	xor		a
 	ld		(level),a
@@ -23,6 +49,7 @@ newlevel:
 
     xor     a
     ld      (BONUSES._deathsPerLevel),a
+    ld      (BONUSES._eexited),a
 
 restart:
 	ld		a,$99
@@ -57,6 +84,8 @@ mainloop:
 
 	call	updatecloud
 	call	drone
+
+    call    stats
 
 	call	generateenemy
 
@@ -151,8 +180,16 @@ _headupdate:
     call    detectdot
     jp      z,mainloop
 
-nextlevel:
-	ld		a,12
+    ; next level
+
+    ld      a,BONUSES._deathsPerLevel           ; did player die at all this level?
+    and     a
+    jr      nz,{+}
+
+    ld      hl,BONUSES._levelsWithoutADeath     ; no, so track how many levels we did without dying
+    inc     (hl)
+
++:  ld		a,12
 	call	AFXPLAY
 
 	call	tidyup

@@ -11,10 +11,12 @@ updatecloud:
 	inc		a
 	and		63
 	ld		(cldfrm),a
-	or		clouds & 255
-	ld		l,a
-	ld		h,clouds / 256
-	ld		de,dfile+1+CLDSTART1
+    ld      hl,clouds
+    add     a,l
+    ld      l,a
+    jr      nc,{+}
+    inc     h
++:	ld		de,dfile+1+CLDSTART1
 	ld		bc,CLDLEN1
 	ldir
 	inc		hl
@@ -42,9 +44,12 @@ showwinch:
 	ld		a,(winchframe)
 	and		3
 	rlca
-	or		winchanim & 255
-	ld		l,a
-	ld		h,winchanim / 256
+    ld      hl,winchanim
+    add     a,l
+    ld      l,a
+    jr      nc,{+}
+    inc     h
++:
 	ld		b,(hl)
 	inc		hl
 	ld		c,(hl)

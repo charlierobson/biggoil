@@ -81,10 +81,12 @@ _intothevoid:
 	call	setdirection				; store new player direction in var & queue
 
 	or		b							; a = old player direction * 8 + new player direction
-	or		turntable & 255				; index in to table of characters that describe a pipe
-	ld		e,a							; join from old -> new direction
-	ld		d,turntable / 256
-	ld		a,(de)
+    ld      de,turntable				; index in to table of characters that describe a pipe
+	add	    a,e							; join from old -> new direction
+    ld      e,a
+    jr      nc,{+}
+    inc     d
++:	ld		a,(de)
 
 	ld		hl,(oldplayerpos)			; update pipe
 	ld		(hl),a
@@ -115,10 +117,12 @@ retract:
 
 	and		a							; get offset to the screen position that the player
 	rlca								; arrived from last frame
-	or		reversetab & 255
-	ld		l,a
-	ld		h,reversetab / 256
-	ld		a,(hl)
+    ld      hl,reversetab
+    add     a,l
+    ld      l,a
+    jr      nc,{+}
+    inc     h
++:	ld		a,(hl)
 	inc		hl
 	ld		d,(hl)
 	ld		e,a
