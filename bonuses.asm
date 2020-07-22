@@ -23,22 +23,28 @@ displayBonuses:
 
 
 _checkAndDisplay:
-    ld      a,(hl)
+    ld      a,(hl)      ; score if bonus achieved
     ld      (_bonus),a
     inc     hl
-    ld      a,(hl)
-    push    af          ; stash compare value
+
+    ld      a,(hl)      ; value to use in compare function
+    push    af
     inc     hl
+
     ld      a,(hl)      ; address of compare fn
     ld      (_comparer+1),a
     inc     hl
     ld      a,(hl)
     ld      (_comparer+2),a
+    inc     hl
+
     ld      a,(hl)      ; hl - data address to check
     inc     hl
     ld      h,(hl)
     ld      l,a
-    pop     af
+
+    pop     af          ; recover value
+
 _comparer:
     call    0
     ret     nz           ; no points to add
@@ -125,6 +131,11 @@ _drline:
 
 
 
+    ; a is value to check against, (hl) is variable
+    ; i.e. if lives > 4
+    ; a = 4, hl = lives
+    ; 4 - (hl) results in z set if lives = 4, c set if lives > 4
+
 _byteEQ:
     cp      (hl)
     ret     z           ; return with z if bonus is coming
@@ -137,13 +148,28 @@ _yep:
     xor     a
     ret
 
-_byteGE:
+
+_byteGT:
     cp      (hl)
-    jr      nc,_yep
+    jr      c,_yep
+    jr      _nope
+
+
+_byteGTE:
+    cp      (hl)
+    jr      z,_yep
+    jr      c,_yep
     jr      _nope
 
 
 _byteLT:
     cp      (hl)
-    jr      c,_yep
-    jr      _nope
+    jr      z,_nope
+    jr      c,_nope
+    jr      _yep
+
+
+_byteLTE:
+    cp      (hl)
+    jr      c,_nope
+    jr      _yep

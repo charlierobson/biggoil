@@ -9,6 +9,10 @@ stats:
 
     ld      a,(BONUSES._eeaten)
     ld      de,dfile + 7
+    call    hexout
+
+    ld      a,(BONUSES._levelsWithoutADeath)
+    ld      de,dfile + 10
 
 hexout:
     push    af
@@ -29,6 +33,7 @@ game:
 	ld		(level),a
 	ld		(score),a
 	ld		(score+1),a
+    ld      (BONUSES._levelsWithoutADeath),a
 
 	ld		a,4
 	ld		(lives),a
@@ -102,6 +107,8 @@ mainloop:
 _die:
     ld      hl,BONUSES._deathsPerLevel
     inc     (hl)
+    ld      hl,BONUSES._levelsWithoutADeath
+    ld      (hl),0
 
 	call	loselife
 	jp		nz,restart
@@ -182,7 +189,7 @@ _headupdate:
 
     ; next level
 
-    ld      a,BONUSES._deathsPerLevel           ; did player die at all this level?
+    ld      a,(BONUSES._deathsPerLevel)         ; did player die at all this level?
     and     a
     jr      nz,{+}
 

@@ -179,22 +179,22 @@ lives:
     .module BONUSES
 bonusdefs:
     .byte   $20,0
-    .word   BONUSES._byteEQ,BONUSES._deathsPerLevel
+    .word   BONUSES._byteEQ,BONUSES._deathsPerLevel         ; #1 - clear a level w/o dying
 
     .byte   $20,0
-    .word   BONUSES._byteEQ,BONUSES._eexited
+    .word   BONUSES._byteEQ,BONUSES._eexited                ; #2 - no escapees
 
     .byte   $25,50
-    .word   BONUSES._byteGE,BONUSES._eeaten
+    .word   BONUSES._byteGTE,BONUSES._eeaten                 ; #3 eat 50 or more
 
-    .byte   $30,5
-    .word   BONUSES._byteLT,timerv
+    .byte   $30,3
+    .word   BONUSES._byteLT,timerv                          ; #4 finish with less than 3 on the clock
 
     .byte   $40,2
-    .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath
+    .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath    ; #5 clear 2 levels w/o dying
 
     .byte   $50,4
-    .word   BONUSES._byteGE,BONUSES._levelsWithoutADeath
+    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath    ; #6 clear 4+ levels w/o dying
 
 _eobdp:                 ; end of bonus display pause
     .byte   0
