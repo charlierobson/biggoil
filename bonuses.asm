@@ -5,7 +5,7 @@ displayBonuses:
     ld      (_eobdp),a
 
     ld      hl,bonusdefs
-    ld      bc,$0601            ; b = bonus count, c = initial bonus number
+    ld      bc,$0B01            ; b = bonus count, c = initial bonus number
 
 -:  push    bc
     push    hl
@@ -14,7 +14,12 @@ displayBonuses:
     ld      de,6
     add     hl,de
     pop     bc
-    inc     c                   ; next bonus number to check
+
+    ld      a,c                 ; bonus number in c, bcd
+    inc     a
+    daa
+    ld      c,a
+
     djnz    {-}
 
     ld      a,(_eobdp)          ; if any bonuses were hit we pause here a second or 2
@@ -53,9 +58,9 @@ _displayBonus:
     ld      a,50        ; delay after showinf the bonuses
     ld      (_eobdp),a
 
-    ld      a,ZEROZ
-    add     a,c
-    ld      (bonustext+15),a
+    ld      a,c
+    ld      de,bonustext+14
+    call    _bcdout
 
     ld      a,8
     ld      hl,dfile+$0ee
@@ -72,6 +77,7 @@ _displayBonus:
     ldir
 
     ld      a,(_bonus)
+    ld      de,dfile+$17b
     call    _bcdout
     ld      a,ZEROZ
     ld      (dfile+$17d),a
@@ -83,6 +89,7 @@ _displayBonus:
 -:  dec     a
     daa
     push    af
+    ld      de,dfile+$17b
     call    _bcdout
     ld      bc,1
     call    addscore
@@ -103,11 +110,12 @@ _bcdout:
     srl     a
     srl     a
     add     a,ZEROZ
-    ld      (dfile+$17b),a
+    ld      (de),a
+    inc     de
     pop     af
     and     $0f
     add     a,ZEROZ
-    ld      (dfile+$17c),a
+    ld      (de),a
     ret
 
 

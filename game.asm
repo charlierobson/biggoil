@@ -1,33 +1,3 @@
-stats:
-    ld      a,(BONUSES._deathsPerLevel)
-    ld      de,dfile + 1
-    call    hexout
-
-    ld      a,(BONUSES._eexited)
-    ld      de,dfile + 4
-    call    hexout
-
-    ld      a,(BONUSES._eeaten)
-    ld      de,dfile + 7
-    call    hexout
-
-    ld      a,(BONUSES._levelsWithoutADeath)
-    ld      de,dfile + 10
-
-hexout:
-    push    af
-    rra
-    rra
-    rra
-    rra
-    call    {+}
-    pop     af
-+:  and     $f
-    add     a,$1c
-    ld      (de),a
-    inc     de
-    ret
-
 game:
 	xor		a
 	ld		(level),a
@@ -89,8 +59,6 @@ mainloop:
 
 	call	updatecloud
 	call	drone
-
-    call    stats
 
 	call	generateenemy
 

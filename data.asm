@@ -173,7 +173,6 @@ hiscore:
 lives:
 	.byte   0
 
-#include "redefinekeysdata.asm"
 
 
     .module BONUSES
@@ -185,7 +184,7 @@ bonusdefs:
     .word   BONUSES._byteEQ,BONUSES._eexited                ; #2 - no escapees
 
     .byte   $25,50
-    .word   BONUSES._byteGTE,BONUSES._eeaten                 ; #3 eat 50 or more
+    .word   BONUSES._byteGTE,BONUSES._eeaten                ; #3 eat 50 or more
 
     .byte   $30,3
     .word   BONUSES._byteLT,timerv                          ; #4 finish with less than 3 on the clock
@@ -194,7 +193,22 @@ bonusdefs:
     .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath    ; #5 clear 2 levels w/o dying
 
     .byte   $50,4
-    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath    ; #6 clear 4+ levels w/o dying
+    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath   ; #6 clear 4+ levels w/o dying
+
+    .byte   $10,3
+    .word   BONUSES._byteEQ,level                           ; #7 reach level 4
+
+    .byte   $15,4
+    .word   BONUSES._byteEQ,level                           ; #8 reach level 5
+
+    .byte   $20,5
+    .word   BONUSES._byteEQ,level                           ; #9 reach level 6
+
+    .byte   $25,6
+    .word   BONUSES._byteEQ,level                           ; #10 reach level 7
+
+    .byte   $30,7
+    .word   BONUSES._byteEQ,level                           ; #11 hit level 7
 
 _eobdp:                 ; end of bonus display pause
     .byte   0
@@ -258,6 +272,7 @@ titlestc:
 	.incbin yerz.stc
 
 
+#include "redefinekeysdata.asm"
 
 
 entrancecount:
