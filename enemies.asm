@@ -165,11 +165,15 @@ _ehup:
 	res		2,h
 	ld		(hl),a
 
+    ld      a,(timestop)            ; don't move when time stopped
+    and     a
+    jr      nz,{+}
+
 	ld		e,(iy+EO_MDL)			; move
 	ld		d,(iy+EO_MDH)
 	add		hl,de
 
-	ex		de,hl					; about to wander onto the player's head in the updated position?
++:	ex		de,hl					; about to wander onto the player's head in the updated position?
 	ld		hl,(playerpos)
 	and		a
 	sbc		hl,de
@@ -185,6 +189,10 @@ _ehup:
 
 	cp		128						; wall?
 	jr		nz,_testhit
+
+    ld      a,(timestop)            ; don't move when time stopped
+    and     a
+    jr      nz,_eupd
 
 	ld		e,(iy+EO_MDL)			; move
 	ld		d,(iy+EO_MDH)

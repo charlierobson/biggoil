@@ -47,12 +47,19 @@ _moveavail:
 	cp		DOT
 	jr		z,_intothescore
 
+    ; something other than space or oil ...
+
 	and		127							; pipe is 1..7 incl, greys are 8..10
 	cp		$0b
 	jr		c,_nomove					; is either pipe or background
 	cp		$1a
 	jr		nc,_nomove					; is either pipe or background
 
+	cp		$17                         ; '*' - time stop
+    jr      nz,_intothevoid
+
+    ld      a,250                       ; counts down, when nonzero enemies don't move
+    ld      (timestop),a
 	jr		_intothevoid				; probably an enemy, allow movement on to it
 
 _intothescore:

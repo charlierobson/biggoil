@@ -62,7 +62,13 @@ mainloop:
 
 	call	generateenemy
 
-	ld		a,(frames)
+    ld      a,(timestop)           ; decrement timestop to zero
+    and     a
+    jr      z,{+}
+    dec     a
+    ld      (timestop),a 
+
++:	ld		a,(frames)
 	and		63
 	call	z,dotimer				; returns with z set if timer has hit 0
 	jr		z,_die
@@ -115,7 +121,7 @@ _noretract:
 	ld		a,(frames)				; only dig every nth frame
 	and		3						; could be game speed controller?
 	cp		3
-	jr		nz,mainloop
+	jp		nz,mainloop
 
 	ld		a,(headchar)			; animate the digging head
 	xor		PIPE_HEAD1 ^ PIPE_HEAD2
