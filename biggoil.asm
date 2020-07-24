@@ -89,6 +89,7 @@ line1:
 	.include instructionscrn.asm
 	.include decrunch.asm
 	.include redefinekeys.asm
+	.include general.asm
 	.include data.asm
 
 

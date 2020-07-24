@@ -2,13 +2,11 @@
 ;
 .module TSC
 
-_tt1:
-	.asc	"press fire"
-_tt2:
-	.asc	"r:redefine"
-
 titlescn:
 	call	init_stc
+
+	ld		hl,0
+	ld		(frames),hl
 
 _titleredraw:
 	ld		hl,title

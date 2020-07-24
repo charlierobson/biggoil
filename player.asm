@@ -125,11 +125,8 @@ retract:
 	and		a							; get offset to the screen position that the player
 	rlca								; arrived from last frame
     ld      hl,reversetab
-    add     a,l
-    ld      l,a
-    jr      nc,{+}
-    inc     h
-+:	ld		a,(hl)
+    call    adda2hl
+	ld		a,(hl)
 	inc		hl
 	ld		d,(hl)
 	ld		e,a

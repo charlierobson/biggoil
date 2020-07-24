@@ -104,10 +104,6 @@ clouds:
 	.byte	$00, $0a, $08, $09, $00, $00, $00, $00, $00, $00, $00, $0a, $0a, $09, $09, $00, $00, $00, $08, $08, $0a, $00, $00, $00, $00, $00, $00, $09, $08, $08, $0a, $00
 
 
-backmsg:
-;         --------========--------========
-	.asc "hit fire to go back             "
-
 bonustext:
     .asc    "secret bonus: 00"
 
@@ -224,6 +220,16 @@ _eexited:
     .byte   0
     .endmodule ; ----------------- END MODULE ---------------
 
+    .module INSTRUCTIONS
+_titletextlist:
+    .word   _titletexts+36,_titletexts+18,_titletexts+36,_titletexts
+
+_titletexts:
+    .asc    "game by sirmorris."
+    .asc    "music by yerzmyey."
+    .asc    "<fire> to go back."
+    .endmodule
+
 	.word   0               ; padding byte - do not remove
 	.align  256
 retractqueue:
@@ -311,6 +317,13 @@ _frk:
 	.asc	"   fire   "
     .endmodule ; ----------------- END MODULE ---------------
 
+
+    .module TSC
+_tt1:
+	.asc	"press fire"
+_tt2:
+	.asc	"r:redefine"
+    .endmodule
 
 entrancecount:
 	.byte	0

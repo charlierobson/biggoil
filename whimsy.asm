@@ -12,11 +12,8 @@ updatecloud:
 	and		63
 	ld		(cldfrm),a
     ld      hl,clouds
-    add     a,l
-    ld      l,a
-    jr      nc,{+}
-    inc     h
-+:	ld		de,dfile+1+CLDSTART1
+    call    adda2hl
+	ld		de,dfile+1+CLDSTART1
 	ld		bc,CLDLEN1
 	ldir
 	inc		hl
@@ -45,11 +42,8 @@ showwinch:
 	and		3
 	rlca
     ld      hl,winchanim
-    add     a,l
-    ld      l,a
-    jr      nc,{+}
-    inc     h
-+:
+    call    adda2hl
+
 	ld		b,(hl)
 	inc		hl
 	ld		c,(hl)

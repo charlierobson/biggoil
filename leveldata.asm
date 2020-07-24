@@ -20,14 +20,7 @@ displaylevel:
 	and		3					    ; cycle of 4 levels, stick on level 4 after 2 cycles
 	rlca
     ld      hl,leveldata
-    add     a,l
-    ld      l,a
-    jr      nc,{+}
-    inc     h
-+:  ld		a,(hl)
-	inc		hl
-	ld		h,(hl)
-	ld		l,a
+    call    tableget
 	ld		de,dfile
 	call	decrunch
 	call	displayscore
