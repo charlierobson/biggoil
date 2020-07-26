@@ -14,6 +14,13 @@ redefinekeys:
 	ld		bc,14
 	ldir
 
+    xor     a                       ; clear key line
+	ld		hl,dfile+$300
+	ld		de,dfile+$301
+    ld      (hl),a
+    ld      bc,16
+    ldir
+
 	ld		de,up-2
 	ld		hl,REDEFDATA._upk
 	call	_redeffit
@@ -47,8 +54,8 @@ redefinekeys:
 _redeffit:
 	ld		(REDEFDATA._keyaddress),de		; the input data we're altering
 
-	ld		de,dfile+$303			; copy key text to screen
-	ld		bc,10
+	ld		de,dfile+$306			; copy key text to screen
+	ld		bc,5
 	ldir
 
 _redefloop:

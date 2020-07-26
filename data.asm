@@ -107,6 +107,15 @@ clouds:
 bonustext:
     .asc    "secret bonus: 00"
 
+score:
+    .word   0
+
+scoretoadd:
+    .word   0
+
+hiscore:
+    .word   0
+
 
 	.align  1024
 .if $ != $5400
@@ -157,15 +166,6 @@ retractptr:
 timerv:
 	.byte   0
 
-scoretoadd:
-	.byte   0
-
-score:
-	.word   0
-
-hiscore:
-	.word   0
-
 lives:
 	.byte   0
 
@@ -174,37 +174,42 @@ lives:
     .module BONUSES ; ----------------- MODULE ---------------
 bonusdefs:
     .byte   $20,0
-    .word   BONUSES._byteEQ,BONUSES._deathsPerLevel         ; #1 - clear a level w/o dying
+    .word   BONUSES._byteEQ,BONUSES._deathsPerLevel         ; #1 - survivor
 
     .byte   $20,0
-    .word   BONUSES._byteEQ,BONUSES._eexited                ; #2 - no escapees
+    .word   BONUSES._byteEQ,BONUSES._eexited                ; #2 - alcatraz guard
 
     .byte   $25,50
-    .word   BONUSES._byteGTE,BONUSES._eeaten                ; #3 eat 50 or more
+    .word   BONUSES._byteGTE,BONUSES._eeaten                ; #3 - hungry guy
 
     .byte   $30,3
-    .word   BONUSES._byteLT,timerv                          ; #4 finish with less than 3 on the clock
+    .word   BONUSES._byteLT,timerv                          ; #4 - brinksman
 
     .byte   $40,2
-    .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath    ; #5 clear 2 levels w/o dying
+    .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath    ; #5 - superskill
 
     .byte   $50,4
-    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath   ; #6 clear 4+ levels w/o dying
+    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath   ; #6 - godskill
+
+    .byte   $50,90
+    .word   BONUSES._byteEQ,retractptr                      ; #7 - bigg boy
 
     .byte   $10,3
-    .word   BONUSES._byteEQ,level                           ; #7 reach level 4
+    .word   BONUSES._byteEQ,level                           ; #8 - clocker
 
     .byte   $15,4
-    .word   BONUSES._byteEQ,level                           ; #8 reach level 5
+    .word   BONUSES._byteEQ,level                           ; #9 - clocker ii electric boogaloo
 
     .byte   $20,5
-    .word   BONUSES._byteEQ,level                           ; #9 reach level 6
+    .word   BONUSES._byteEQ,level                           ; #10 - clocker iii wowee
 
     .byte   $25,6
-    .word   BONUSES._byteEQ,level                           ; #10 reach level 7
+    .word   BONUSES._byteEQ,level                           ; #11 - clocker iv big score
 
     .byte   $30,7
-    .word   BONUSES._byteEQ,level                           ; #11 hit level 7
+    .word   BONUSES._byteEQ,level                           ; #12 - roy castle
+bonusdefsend:
+bonuscount = (bonusdefsend-bonusdefs)/6
 
 _eobdp:                 ; end of bonus display pause
     .byte   0
@@ -221,19 +226,21 @@ _eexited:
     .endmodule ; ----------------- END MODULE ---------------
 
     .module INSTRUCTIONS
-_titletextlist:
-    .word   _titletexts+36,_titletexts+18,_titletexts+36,_titletexts
+_instcreds:
+    .word   _ic3,_ic2,_ic3,_ic1
 
-_titletexts:
-    .asc    "game by sirmorris."
-    .asc    "music by yerzmyey."
-    .asc    "<fire> to go back."
+_ic1:
+    .asc    "game : sirmorris"
+_ic2:
+    .asc    "music : yerzmyey"
+_ic3:
+    .asc    "<reel> to return"
     .endmodule
 
-	.word   0               ; padding byte - do not remove
+    .word 0 ; padding byte
 	.align  256
 retractqueue:
-	.fill   256,$ff
+	.fill   128,$ff
 
 enemydata:
 	.fill   64*10,0         ; 10 enemies of 64 bytes each
@@ -306,23 +313,27 @@ _bit2byte:
 _pkf:
 	.asc	"press key for:"
 _upk:
-	.asc	"    up    "
+	.asc	" up  "
 _dnk:
-	.asc	"   down   "
+	.asc	"down "
 _lfk:
-	.asc	"   left   "
+	.asc	"left "
 _rtk:
-	.asc	"   right  "
+	.asc	"right"
 _frk:
-	.asc	"   fire   "
+	.asc	"reel "
     .endmodule ; ----------------- END MODULE ---------------
 
 
     .module TSC
-_tt1:
-	.asc	"press fire"
+_titletextlist:
+    .word    _tt3,_tt1,_tt2,_tt1
+_tt1:   
+	.asc	"  press <reel>  "
 _tt2:
-	.asc	"r:redefine"
+	.asc	"  r : redefine  "
+_tt3:
+	.asc	"i : instructions"
     .endmodule
 
 entrancecount:
@@ -353,3 +364,40 @@ end:
 help:
 	.incbin instructions.binlz
 
+framesync:
+	ld		hl,frames
+	ld		a,(hl)
+-:	cp		(hl)
+	jr		z,{-}
+
+ledsoff:
+    ld      a,$b7                       ; green off
+    call    ledctl
+    ld      a,$b9                       ; red off
+ledctl:
+    push    bc
+    ld      bc,$e007                    ; zxpand LED control
+    out     (c),a
+    pop     bc
+    ret
+
+waitframes:
+	call	framesync
+	djnz	waitframes
+	ret
+
+
+;;hexout:
+;;   push    af
+;;    rlca
+;;    rlca
+;;    rlca
+;;    rlca
+;;    call    _digitout
+;;    pop     af
+;;_digitout:
+;;    and     $0f
+;;    add     a,ZEROZ
+;;    ld      (de),a
+;;    inc     de
+;;    ret

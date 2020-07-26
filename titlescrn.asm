@@ -18,30 +18,29 @@ _titleredraw:
 _titleloop:
 	call	framesync
 
-	ld		a,(frames)
-	and		127
-	jr		nz,_nochangetext
 
-	ld		hl,_tt1
-	ld		a,(frames)
-	and		128
-	jr		nz,{+}
-	ld		hl,_tt2
-+:  ld		de,dfile+$303
-	ld		bc,10
+    ld      a,(frames)  ; AB------
+    rlca                ; -------A
+    rlca                ; ------AB
+    rlca                ; -----AB-
+    and     6           ; 00000AB0  :- 0,2,4,6
+
+    ld      hl,_titletextlist
+    call    tableget
+
++:  ld		de,dfile+$300
+	ld		bc,16
 	ldir
 
 _nochangetext:
 	ld		  a,(frames)
-	and		 15
+	and		 16
 	jr		  nz,_noflash
 
-	ld		  hl,dfile+$303
-	ld		  b,10
+	ld		  hl,dfile+$300
+	ld		  b,16
 _ilop:
-	ld		  a,(hl)
-	xor		 $80
-	ld		  (hl),a
+	set     7,(hl)
 	inc		 hl
 	djnz		_ilop
 

@@ -127,6 +127,10 @@ _noretract:
 	xor		PIPE_HEAD1 ^ PIPE_HEAD2
 	ld		(headchar),a
 
+    ld      a,(retractptr)          ; pipe length
+    inc     a
+    jr      z,_headupdate           ; is 255 so can't move
+
 	call	tryup					; the tryxxx functions return with z set
 	jr		z,_headupdate			; if that direction was taken
 

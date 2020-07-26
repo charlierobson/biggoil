@@ -24,18 +24,3 @@ irqsnd = $+1
 
 +:	ld		ix,relog
 	jp		$02a4
-
-
-
-waitframes:
-	call	framesync
-	djnz	waitframes
-	ret
-
-
-framesync:
-	ld		hl,frames
-	ld		a,(hl)
--:	cp		(hl)
-	jr		z,{-}
-	ret

@@ -13,6 +13,7 @@ instructions:
 _helploop:
 	call	framesync
 	call	readtitleinput
+    call    updatecloud
 
     ld      a,(frames)  ; AB------
     rlca                ; -------A
@@ -20,11 +21,11 @@ _helploop:
     rlca                ; -----AB-
     and     6           ; 00000AB0  :- 0,2,4,6
 
-    ld      hl,_titletextlist
+    ld      hl,_instcreds
     call    tableget
 
-    ld      de,dfile+$2ff
-    ld      bc,18
+    ld      de,dfile+$300
+    ld      bc,16
     ldir
 
 	ld		a,(begin)

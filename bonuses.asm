@@ -5,7 +5,7 @@ displayBonuses:
     ld      (_eobdp),a
 
     ld      hl,bonusdefs
-    ld      bc,$0B01            ; b = bonus count, c = initial bonus number
+    ld      bc,bonuscount * 256 + 1     ; b = bonus count, c = initial bonus number
 
 -:  push    bc
     push    hl

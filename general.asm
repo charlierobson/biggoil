@@ -12,3 +12,4 @@ tableget:
 	ld		h,(hl)
 	ld		l,a
     ret
+
