@@ -1,4 +1,7 @@
 game:
+    ld      hl,gameconfig
+    call    setupdisplay
+
 	xor		a
 	ld		(level),a
 	ld		(score),a

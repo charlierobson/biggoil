@@ -3,6 +3,9 @@
 .module TSC
 
 titlescn:
+    ld      hl,titleconfig
+    call    setupdisplay
+
 	call	init_stc
 
 	ld		hl,0

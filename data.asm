@@ -78,11 +78,11 @@ titleinputstates:
 	.byte	%11111111,7,%11111111,0
 
 inputstates:
-	.byte	%00001000,7,%00000001,0		; fire	(SP)
 	.byte	%10000000,2,%00000001,0		; up    (Q)
 	.byte	%01000000,1,%00000001,0		; down	(A)
 	.byte	%00100000,5,%00000010,0		; left	(O)
 	.byte	%00010000,5,%00000001,0		; right	(P)
+	.byte	%00001000,7,%00000001,0		; fire	(SP)
 
 ; calculate actual input impulse addresses
 ;
@@ -240,11 +240,6 @@ _ic3:
     .endmodule
 
 
-framesync:
-	ld		hl,frames
-	ld		a,(hl)
--:	cp		(hl)
-	jr		z,{-}
 
 ledsoff:
     ld      a,$b7                       ; green off
@@ -256,11 +251,6 @@ ledctl:
     out     (c),a
     pop     bc
     ret
-
-waitframes:
-	call	framesync
-	djnz	waitframes
-	ret
 
     .word 0 ; padding byte
 	.align  256

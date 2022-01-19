@@ -57,7 +57,6 @@ line1:
 	.byte	$ea
 
 	call	seedrnd
-	call	installirq
 
 	ld		b,100					; give time for crappy LCD tvs to re-sync
 	call	waitframes

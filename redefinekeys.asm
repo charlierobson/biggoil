@@ -23,23 +23,11 @@ redefinekeys:
 
 	ld		de,up-2
 	ld		hl,REDEFDATA._upk
-	call	_redeffit
-
-	ld		de,down-2
-	ld		hl,REDEFDATA._dnk
-	call	_redeffit
-
-	ld		de,left-2
-	ld		hl,REDEFDATA._lfk
-	call	_redeffit
-
-	ld		de,right-2
-	ld		hl,REDEFDATA._rtk
-	call	_redeffit
-	
-	ld		de,fire-2
-	ld		hl,REDEFDATA._frk
-	call	_redeffit
+	call	_redeffit               ; up
+	call	_redeffit               ; down
+	call	_redeffit               ; left
+	call	_redeffit               ; right
+	call	_redeffit               ; fire
 
 	ld		hl,(fire-2)				 ; copy fire button definition to title screen input states
 	ld		(begin-2),hl
@@ -58,12 +46,10 @@ _redeffit:
 	ld		bc,5
 	ldir
 
-_redefloop:
-	call	framesync
-	call	inkbin
-	call	getcolbit
-	cp		$ff
-	jr		z,_redefloop
+    push    hl                      ; next key string
+
+-:  call    _testkeys
+	jr		z,{-}
 
 	xor		$ff				 		; flip so we have a 1 bit where the key is
 
@@ -71,17 +57,24 @@ _redefloop:
 	ld		(hl),c
 	inc		hl
 	ld		(hl),a
+    inc     hl
+    inc     hl
+    push    hl
 
-_redefnokey:
+-:  call    _testkeys
+	jr		nz,{-}
+
+    pop     de
+    pop     hl
+	ret
+
+
+_testkeys:
 	call	framesync
 	call	inkbin
 	call	getcolbit
 	cp		$ff
-	jr		nz,_redefnokey
-	ret
-
-
-
+    ret
 
 getcolbit:
 	ld		bc,$0800				; b is loop count, c is row index
