@@ -59,6 +59,7 @@ _redeffit:
 	ld		(hl),a
     inc     hl
     inc     hl
+    inc     hl
     push    hl
 
 -:  call    _testkeys

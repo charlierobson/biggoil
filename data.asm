@@ -5,17 +5,9 @@
 .warn "DFILE needs to be at $x000 boundary"
 .endif
 dfile:
-	.repeat 12
+	.repeat 24
 	  .byte 076H
 	  .fill 32,0
-	.loop
-	.byte   $76
-	.fill   14,0
-	.byte   $3c,$26,$2e,$39
-	.fill   14,0
-	.repeat 11
-	  .byte   076H
-	  .fill   32,0
 	.loop
 	.byte   076H
 
@@ -90,11 +82,11 @@ begin	= titleinputstates + 3
 redef	= titleinputstates + 7
 instr	= titleinputstates + 11
 
-fire	= inputstates + 3
-up		= inputstates + 7
-down	= inputstates + 11
-left	= inputstates + 15
-right	= inputstates + 19
+up		= inputstates + 3
+down	= inputstates + 7
+left	= inputstates + 11
+right	= inputstates + 15
+fire	= inputstates + 19
     .endmodule ; ----------------- END MODULE ---------------
 
 
@@ -379,6 +371,11 @@ end:
 help:
 	.incbin instructions.binlz
 
+TMARGIN:
+    .word   56-1                    ; 50hz defaults
+BMARGIN:
+    .word   56-1
+
 chkeattail:
 	set		2,h                             ; check the map at the proposed position
 	ld		a,(hl)
@@ -387,6 +384,12 @@ chkeattail:
     ret     nz
     ld      (BONUSES._peattail),a                   ; stash nonzero in bonus flag
     ret
+
+
+setup:
+	call	seedrnd
+	ld		b,100					; give time for crappy LCD tvs to re-sync
+	jp	    waitframes
 
 
 ;;hexout:

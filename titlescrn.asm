@@ -48,7 +48,8 @@ _ilop:
 	djnz		_ilop
 
 _noflash:
-	call		readtitleinput
+	ld		hl,titleinputstates
+    call    readinputs
 
 	ld		  a,(redef)				; redefine when r released
 	and		 3
@@ -62,7 +63,8 @@ _noflash:
 	and		 3
 	cp		  2
 	jr      nz,{+}
-	call		instructions
+
+    call	instructions
     jr      _titleredraw
 
 +:

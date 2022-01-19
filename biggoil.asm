@@ -39,14 +39,17 @@ pr_cc	.byte	188
 s_posn	.byte	33 
 s_psn1	.byte	24 
 cdflag	.byte	64 
-PRTBUF	.fill	32,0
-prbend	.byte	$76 
-membot	.fill	32,0
+PRTBUF = $
+membot = PRTBUF+33
 
+    .include    readinputs.asm  ; exactly 65 bytes of code
 
 	.include	charmap.asm
     .include    gamedefs.asm
 
+.if $ != $407D
+.warn "sysvar block length discrepency"
+.endif
 
 ;-------------------------------------------------------------------------------
 
@@ -56,10 +59,7 @@ line1:
 	.word	line01end-$-2
 	.byte	$ea
 
-	call	seedrnd
-
-	ld		b,100					; give time for crappy LCD tvs to re-sync
-	call	waitframes
+    call    setup
 
 -:	call	titlescn
 	call	game

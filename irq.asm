@@ -23,20 +23,21 @@
 ; In order to give 50hz systems enough time to play the music in the bottom margin we need to reduce the screen height by 2 lines.
 
 setupdisplay:
+    PUSH HL
     CALL framesync
 
     LD   IX,GENERATE_DISPLAY        ; Select to run the custom display driver.
 
-    IN   A,($FE)                    ; Nothing to do if 50hz
-    AND  64
-    RETNZ
-
-    JP   (HL)
+    LD   A,(margin)                 ; Nothing to do if 50hz
+    CP   55
+    POP  HL
+    RET  Z
+    JP   (HL)                       ; jump ahead to screen setup
 
 titleconfig:
     LD   A,32-1                     ; setup display driver for 60hz
     LD   (TMARGIN),a
-    LD   A,40-1                     ; lose 8 lines in the bottom margin
+    LD   A,48-1                     ; lose 16 lines in the bottom margin
     LD   (BMARGIN),a
     LD   A,22+1
     LD   (_dlines),a
@@ -49,11 +50,6 @@ gameconfig:
     LD   A,24+1
     LD   (_dlines),a
     RET
-
-TMARGIN:
-    .word   56-1
-BMARGIN:
-    .word   56-1
 
 ; ======================================================================================================================================================
 
@@ -196,13 +192,14 @@ _dlines=$+2
 
 ; You could perform other tasks here is you wished, e.g. output sound or read a joystick.
 
-        LD   A,(TMARGIN)                ; Fetch the number of bottom border lines. You could replace this to avoid using system variable MARGIN.
+        LD   A,(BMARGIN)                ; Fetch the number of bottom border lines. You could replace this to avoid using system variable MARGIN.
         
         LD   IX,GENERATE_VSYNC          ; Set the video handler pointer to the VSync generation routine.
         JP   $029E                      ; Return to user program and start generating the bottom border lines.
 
 ; ======================================================================================================================================================
 
+; just here out of the way for the moment
 irqsnd=$+1
     call    0
 
