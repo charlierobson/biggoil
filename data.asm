@@ -116,16 +116,6 @@ scoretoadd:
 hiscore:
     .word   0
 
-
-	.align  1024
-.if $ != $5400
-.warn "offscreen map needs to be at $x400 boundary"
-.endif
-offscreenmap:
-	.fill   33*24
-
-
-
 newtone:
 newtonep1=newtone+1
 newtonep2=newtone+5
@@ -133,6 +123,13 @@ newtonep3=newtone+8
 newtonep4=newtone+11
 	.byte   $EF,$F9,$03,$00,$AD,$03,$02,$AA,$2D,$01,$A7,$FB,$00,$D0,$20
 	.byte   $EF,$F9,$03,$00,$AD,$03,$02,$AA,$2D,$01,$A7,$FB,$00,$D0,$20
+
+	.align  1024
+.if $ != $5400
+.warn "offscreen map needs to be at $x400 boundary"
+.endif
+offscreenmap:
+	.fill   33*24
 
 
 
@@ -173,41 +170,44 @@ lives:
 
     .module BONUSES ; ----------------- MODULE ---------------
 bonusdefs:
-    .byte   $20,0
-    .word   BONUSES._byteEQ,BONUSES._deathsPerLevel         ; #1 - survivor
+    .byte   $10,0
+    .word   BONUSES._byteEQ,BONUSES._deathsPerLevel         ; #1 - survivalist
 
     .byte   $20,0
-    .word   BONUSES._byteEQ,BONUSES._eexited                ; #2 - alcatraz guard
+    .word   BONUSES._byteEQ,BONUSES._eexited                ; #2 - alcatrazguard
 
     .byte   $25,50
-    .word   BONUSES._byteGTE,BONUSES._eeaten                ; #3 - hungry guy
+    .word   BONUSES._byteGTE,BONUSES._eeaten                ; #3 - hungryguy
+
+    .byte   $10,8
+    .word   BONUSES._byteEQ,BONUSES._peattail               ; #4 - autosarcophagy
 
     .byte   $30,3
-    .word   BONUSES._byteLT,timerv                          ; #4 - brinksman
+    .word   BONUSES._byteLT,timerv                          ; #5 - brinksman
 
     .byte   $40,2
-    .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath    ; #5 - superskill
+    .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath    ; #6 - superskill
 
     .byte   $50,4
-    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath   ; #6 - godskill
+    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath   ; #7 - godskill
 
     .byte   $50,90
-    .word   BONUSES._byteEQ,retractptr                      ; #7 - bigg boy
+    .word   BONUSES._byteEQ,retractptr                      ; #8 - biggboy
 
     .byte   $10,3
-    .word   BONUSES._byteEQ,level                           ; #8 - clocker
+    .word   BONUSES._byteEQ,level                           ; #9 - clocker
 
     .byte   $15,4
-    .word   BONUSES._byteEQ,level                           ; #9 - clocker ii electric boogaloo
+    .word   BONUSES._byteEQ,level                           ; #10 - clocker2electricboogaloo
 
     .byte   $20,5
-    .word   BONUSES._byteEQ,level                           ; #10 - clocker iii wowee
+    .word   BONUSES._byteEQ,level                           ; #11 - clocker3wowee
 
     .byte   $25,6
-    .word   BONUSES._byteEQ,level                           ; #11 - clocker iv big score
+    .word   BONUSES._byteEQ,level                           ; #12 - clocker4bigscore
 
     .byte   $30,7
-    .word   BONUSES._byteEQ,level                           ; #12 - roy castle
+    .word   BONUSES._byteEQ,level                           ; #13 - twicearound
 bonusdefsend:
 bonuscount = (bonusdefsend-bonusdefs)/6
 
@@ -223,6 +223,8 @@ _eeaten:
     .byte   0
 _eexited:
     .byte   0
+_peattail:
+    .byte   0
     .endmodule ; ----------------- END MODULE ---------------
 
     .module INSTRUCTIONS
@@ -236,6 +238,29 @@ _ic2:
 _ic3:
     .asc    "<reel> to return"
     .endmodule
+
+
+framesync:
+	ld		hl,frames
+	ld		a,(hl)
+-:	cp		(hl)
+	jr		z,{-}
+
+ledsoff:
+    ld      a,$b7                       ; green off
+    call    ledctl
+    ld      a,$b9                       ; red off
+ledctl:
+    push    bc
+    ld      bc,$e007                    ; zxpand LED control
+    out     (c),a
+    pop     bc
+    ret
+
+waitframes:
+	call	framesync
+	djnz	waitframes
+	ret
 
     .word 0 ; padding byte
 	.align  256
@@ -364,27 +389,14 @@ end:
 help:
 	.incbin instructions.binlz
 
-framesync:
-	ld		hl,frames
+chkeattail:
+	set		2,h                             ; check the map at the proposed position
 	ld		a,(hl)
--:	cp		(hl)
-	jr		z,{-}
-
-ledsoff:
-    ld      a,$b7                       ; green off
-    call    ledctl
-    ld      a,$b9                       ; red off
-ledctl:
-    push    bc
-    ld      bc,$e007                    ; zxpand LED control
-    out     (c),a
-    pop     bc
+	res		2,h
+    cp      MAP_PIPE                        ; see if we were about to move onto our own tail
+    ret     nz
+    ld      (BONUSES._peattail),a                   ; stash nonzero in bonus flag
     ret
-
-waitframes:
-	call	framesync
-	djnz	waitframes
-	ret
 
 
 ;;hexout:

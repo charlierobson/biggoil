@@ -39,9 +39,11 @@ _moveavail:
 
 	ld		hl,(playerpos)				; stash the current head offset
 	ld		(oldplayerpos),hl
-	add		hl,de						; update position
-	ld		a,(hl)
+	add		hl,de						; potential new position
 
+    call    chkeattail
+
+	ld		a,(hl)
 	cp		0							; check space and dots
 	jr		z,_intothevoid
 	cp		DOT

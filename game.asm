@@ -25,6 +25,7 @@ newlevel:
     xor     a
     ld      (BONUSES._deathsPerLevel),a
     ld      (BONUSES._eexited),a
+    ld      (BONUSES._peattail),a
 
 restart:
 	ld		a,$99
