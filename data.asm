@@ -176,7 +176,7 @@ bonusdefs:
     .word   BONUSES._byteGTE,BONUSES._eeaten                ; #3 - hungryguy
 
     .byte   $10,8
-    .word   BONUSES._byteEQ,BONUSES._peattail               ; #4 - autosarcophagy
+    .word   BONUSES._byteEQ,BONUSES._peattail               ; #4 - autosarcophagy  ;; not working, darn
 
     .byte   $30,3
     .word   BONUSES._byteLT,timerv                          ; #5 - brinksman
@@ -379,15 +379,6 @@ TMARGIN:
     .word   56-1                    ; 50hz defaults
 BMARGIN:
     .word   56-1
-
-chkeattail:
-	set		2,h                             ; check the map at the proposed position
-	ld		a,(hl)
-	res		2,h
-    cp      MAP_PIPE                        ; see if we were about to move onto our own tail
-    ret     nz
-    ld      (BONUSES._peattail),a           ; stash nonzero in bonus flag
-    ret
 
 
 setup:

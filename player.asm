@@ -41,8 +41,6 @@ _moveavail:
 	ld		(oldplayerpos),hl
 	add		hl,de						; potential new position
 
-    call    chkeattail
-
 	ld		a,(hl)
 	cp		0							; check space and dots
 	jr		z,_intothevoid
