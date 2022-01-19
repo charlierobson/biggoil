@@ -161,6 +161,10 @@ lives:
 
 
     .module BONUSES ; ----------------- MODULE ---------------
+
+    ; bonus points/10 (bcd), comparison value
+    ; comparison function, variable mem location
+
 bonusdefs:
     .byte   $10,0
     .word   BONUSES._byteEQ,BONUSES._deathsPerLevel         ; #1 - survivalist
@@ -382,7 +386,7 @@ chkeattail:
 	res		2,h
     cp      MAP_PIPE                        ; see if we were about to move onto our own tail
     ret     nz
-    ld      (BONUSES._peattail),a                   ; stash nonzero in bonus flag
+    ld      (BONUSES._peattail),a           ; stash nonzero in bonus flag
     ret
 
 
