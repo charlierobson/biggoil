@@ -392,6 +392,16 @@ setup:
 	jp	    waitframes
 
 
+aytrampoline:
+    push    de
+    push    iy
+irqsnd=$+1
+    call    _dummy
+    pop     iy
+    pop     de
+_dummy:
+    ret
+
 ;;hexout:
 ;;   push    af
 ;;    rlca

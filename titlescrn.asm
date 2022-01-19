@@ -31,7 +31,7 @@ _titleloop:
     ld      hl,_titletextlist
     call    tableget
 
-+:  ld		de,dfile+$300
++:  ld		de,dfile+$2be
 	ld		bc,16
 	ldir
 
@@ -40,7 +40,7 @@ _nochangetext:
 	and		 16
 	jr		  nz,_noflash
 
-	ld		  hl,dfile+$300
+	ld		  hl,dfile+$2be
 	ld		  b,16
 _ilop:
 	set     7,(hl)

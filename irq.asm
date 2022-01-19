@@ -32,20 +32,19 @@ setupdisplay:
     CP   55
     POP  HL
     RET  Z
+    LD   A,24-1                     ; setup display driver for 60hz
+    LD   (TMARGIN),a
     JP   (HL)                       ; jump ahead to screen setup
 
 titleconfig:
-    LD   A,32-1                     ; setup display driver for 60hz
-    LD   (TMARGIN),a
-    LD   A,48-1                     ; lose 16 lines in the bottom margin
+    LD   A,56-1                     ; lose 16 lines in the bottom margin
     LD   (BMARGIN),a
     LD   A,22+1
     LD   (_dlines),a
     RET
 
 gameconfig:
-    LD   A,32-1                     ; setup display driver for 60hz
-    LD   (TMARGIN),a
+    LD   A,40-1                     ; lose 16 lines in the bottom margin
     LD   (BMARGIN),a
     LD   A,24+1
     LD   (_dlines),a
@@ -192,16 +191,15 @@ _dlines=$+2
 
 ; You could perform other tasks here is you wished, e.g. output sound or read a joystick.
 
+        CALL aytrampoline
+
         LD   A,(BMARGIN)                ; Fetch the number of bottom border lines. You could replace this to avoid using system variable MARGIN.
-        
+
         LD   IX,GENERATE_VSYNC          ; Set the video handler pointer to the VSync generation routine.
         JP   $029E                      ; Return to user program and start generating the bottom border lines.
 
 ; ======================================================================================================================================================
 
-; just here out of the way for the moment
-irqsnd=$+1
-    call    0
 
 
 waitframes:

@@ -2,21 +2,22 @@
 ;
 .module REDEF
 
+_stash = $2b5-66
 
 redefinekeys:
-	ld		hl,dfile+$2b5			; stash content at bottom of screen
-	ld		de,offscreenmap+$2b5
+	ld		hl,dfile+_stash			; stash content at bottom of screen
+	ld		de,offscreenmap+_stash
 	ld		bc,3*33
 	ldir
 
 	ld		hl,REDEFDATA._pkf		; install 'press key for:' text
-	ld		de,dfile+$2bf
+	ld		de,dfile+$27d
 	ld		bc,14
 	ldir
 
     xor     a                       ; clear key line
-	ld		hl,dfile+$300
-	ld		de,dfile+$301
+	ld		hl,dfile+$2be
+	ld		de,dfile+$2be+1
     ld      (hl),a
     ld      bc,16
     ldir
@@ -29,11 +30,11 @@ redefinekeys:
 	call	_redeffit               ; right
 	call	_redeffit               ; fire
 
-	ld		hl,(fire-2)				 ; copy fire button definition to title screen input states
+	ld		hl,(fire-2)             ; copy fire button definition to title screen input states
 	ld		(begin-2),hl
 
-	ld		hl,offscreenmap+$2b5	; restore bottom of screen
-	ld		de,dfile+$2b5
+	ld		hl,offscreenmap+_stash	; restore bottom of screen
+	ld		de,dfile+_stash
 	ld		bc,3*33
 	ldir
 	ret
@@ -42,7 +43,7 @@ redefinekeys:
 _redeffit:
 	ld		(REDEFDATA._keyaddress),de		; the input data we're altering
 
-	ld		de,dfile+$306			; copy key text to screen
+	ld		de,dfile+$2c4			; copy key text to screen
 	ld		bc,5
 	ldir
 
