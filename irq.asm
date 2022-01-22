@@ -199,18 +199,3 @@ _dlines=$+2
         JP   $029E                      ; Return to user program and start generating the bottom border lines.
 
 ; ======================================================================================================================================================
-
-
-
-waitframes:
-	call	framesync
-	djnz	waitframes
-	ret
-
-
-framesync:
-	ld		hl,frames
-	ld		a,(hl)
--:	cp		(hl)
-	jr		z,{-}
-	ret

@@ -237,6 +237,19 @@ _ic3:
 
 
 
+waitframes:
+	call	framesync
+	djnz	waitframes
+	ret
+
+
+framesync:
+	ld		hl,frames
+	ld		a,(hl)
+-:	cp		(hl)
+	jr		z,{-}
+
+
 ledsoff:
     ld      a,$b7                       ; green off
     call    ledctl
