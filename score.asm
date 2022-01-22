@@ -61,7 +61,10 @@ show_char:
 	add		a,$1c
 	ld		(de),a
 	inc		de
-	ret
+
+    ld      a,$b6           ; flash green led
+    jp      ledctl
+
 
 displayscoreonts:
 	ld		de,dfile+SCORE_TITLE_OFFS
