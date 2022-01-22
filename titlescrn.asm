@@ -21,6 +21,9 @@ _titleredraw:
 _titleloop:
 	call	framesync
 
+	ld		a,(frames)
+	and		127
+	jr		nz,_nochangetext
 
     ld      a,(frames)  ; AB------
     rlca                ; -------A
@@ -37,13 +40,15 @@ _titleloop:
 
 _nochangetext:
 	ld		  a,(frames)
-	and		 16
+	and		 15
 	jr		  nz,_noflash
 
 	ld		  hl,dfile+$2be
 	ld		  b,16
 _ilop:
-	set     7,(hl)
+	ld		  a,(hl)
+	xor		 $80
+	ld		  (hl),a
 	inc		 hl
 	djnz		_ilop
 

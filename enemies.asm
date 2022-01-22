@@ -240,9 +240,6 @@ _ediedwithscore:
 	ld		a,(scoretoadd)
 	add		a,2
 	ld		(scoretoadd),a
-    ld      a,$b8               ; red on
-    call    ledctl
-
 	ld		a,14
 	call	AFXPLAY
     ld      hl,BONUSES._eexited ; pre-correct the 'escapee' count

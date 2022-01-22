@@ -4,7 +4,7 @@
 
 updatecloud:
 	ld		a,(frames)
-	and		127
+	and		a
 	ret		nz
 
 	ld		a,(cldfrm)

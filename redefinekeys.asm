@@ -43,8 +43,8 @@ redefinekeys:
 _redeffit:
 	ld		(REDEFDATA._keyaddress),de		; the input data we're altering
 
-	ld		de,dfile+$2c4			; copy key text to screen
-	ld		bc,5
+	ld		de,dfile+$303			; copy key text to screen
+	ld		bc,10
 	ldir
 
     push    hl                      ; next key string

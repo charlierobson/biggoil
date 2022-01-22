@@ -155,6 +155,15 @@ retractptr:
 timerv:
 	.byte   0
 
+scoretoadd:
+	.byte   0
+
+score:
+	.word   0
+
+hiscore:
+	.word   0
+
 lives:
 	.byte   0
 
@@ -166,46 +175,38 @@ lives:
     ; comparison function, variable mem location
 
 bonusdefs:
-    .byte   $10,0
-    .word   BONUSES._byteEQ,BONUSES._deathsPerLevel         ; #1 - survivalist
+    .byte   $20,0
+    .word   BONUSES._byteEQ,BONUSES._deathsPerLevel         ; #1 - clear a level w/o dying
 
     .byte   $20,0
-    .word   BONUSES._byteEQ,BONUSES._eexited                ; #2 - alcatrazguard
+    .word   BONUSES._byteEQ,BONUSES._eexited                ; #2 - no escapees
 
     .byte   $25,50
-    .word   BONUSES._byteGTE,BONUSES._eeaten                ; #3 - hungryguy
-
-    .byte   $10,8
-    .word   BONUSES._byteEQ,BONUSES._peattail               ; #4 - autosarcophagy  ;; not working, darn
+    .word   BONUSES._byteGTE,BONUSES._eeaten                ; #3 eat 50 or more
 
     .byte   $30,3
-    .word   BONUSES._byteLT,timerv                          ; #5 - brinksman
+    .word   BONUSES._byteLT,timerv                          ; #4 finish with less than 3 on the clock
 
     .byte   $40,2
-    .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath    ; #6 - superskill
+    .word   BONUSES._byteEQ,BONUSES._levelsWithoutADeath    ; #5 clear 2 levels w/o dying
 
     .byte   $50,4
-    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath   ; #7 - godskill
-
-    .byte   $50,90
-    .word   BONUSES._byteEQ,retractptr                      ; #8 - biggboy
+    .word   BONUSES._byteGTE,BONUSES._levelsWithoutADeath   ; #6 clear 4+ levels w/o dying
 
     .byte   $10,3
-    .word   BONUSES._byteEQ,level                           ; #9 - clocker
+    .word   BONUSES._byteEQ,level                           ; #7 reach level 4
 
     .byte   $15,4
-    .word   BONUSES._byteEQ,level                           ; #10 - clocker2electricboogaloo
+    .word   BONUSES._byteEQ,level                           ; #8 reach level 5
 
     .byte   $20,5
-    .word   BONUSES._byteEQ,level                           ; #11 - clocker3wowee
+    .word   BONUSES._byteEQ,level                           ; #9 reach level 6
 
     .byte   $25,6
-    .word   BONUSES._byteEQ,level                           ; #12 - clocker4bigscore
+    .word   BONUSES._byteEQ,level                           ; #10 reach level 7
 
     .byte   $30,7
-    .word   BONUSES._byteEQ,level                           ; #13 - twicearound
-bonusdefsend:
-bonuscount = (bonusdefsend-bonusdefs)/6
+    .word   BONUSES._byteEQ,level                           ; #11 hit level 7
 
 _eobdp:                 ; end of bonus display pause
     .byte   0
@@ -224,47 +225,19 @@ _peattail:
     .endmodule ; ----------------- END MODULE ---------------
 
     .module INSTRUCTIONS
-_instcreds:
-    .word   _ic3,_ic2,_ic3,_ic1
+_titletextlist:
+    .word   _titletexts+36,_titletexts+18,_titletexts+36,_titletexts
 
-_ic1:
-    .asc    "game : sirmorris"
-_ic2:
-    .asc    "music : yerzmyey"
-_ic3:
-    .asc    "<reel> to return"
+_titletexts:
+    .asc    "game by sirmorris."
+    .asc    "music by yerzmyey."
+    .asc    "<fire> to go back."
     .endmodule
 
-
-
-waitframes:
-	call	framesync
-	djnz	waitframes
-	ret
-
-
-framesync:
-	ld		hl,frames
-	ld		a,(hl)
--:	cp		(hl)
-	jr		z,{-}
-
-
-ledsoff:
-    ld      a,$b7                       ; green off
-    call    ledctl
-    ld      a,$b9                       ; red off
-ledctl:
-    push    bc
-    ld      bc,$e007                    ; zxpand LED control
-    out     (c),a
-    pop     bc
-    ret
-
-    .word 0 ; padding byte
+	.word   0               ; padding byte - do not remove
 	.align  256
 retractqueue:
-	.fill   128,$ff
+	.fill   256,$ff
 
 enemydata:
 	.fill   64*10,0         ; 10 enemies of 64 bytes each
@@ -337,27 +310,23 @@ _bit2byte:
 _pkf:
 	.asc	"press key for:"
 _upk:
-	.asc	" up  "
+	.asc	"    up    "
 _dnk:
-	.asc	"down "
+	.asc	"   down   "
 _lfk:
-	.asc	"left "
+	.asc	"   left   "
 _rtk:
-	.asc	"right"
+	.asc	"   right  "
 _frk:
-	.asc	"reel "
+	.asc	"   fire   "
     .endmodule ; ----------------- END MODULE ---------------
 
 
     .module TSC
-_titletextlist:
-    .word    _tt3,_tt1,_tt2,_tt1
-_tt1:   
-	.asc	"  press <reel>  "
+_tt1:
+	.asc	"press fire"
 _tt2:
-	.asc	"  r : redefine  "
-_tt3:
-	.asc	"i : instructions"
+	.asc	"r:redefine"
     .endmodule
 
 entrancecount:
@@ -388,39 +357,3 @@ end:
 help:
 	.incbin instructions.binlz
 
-TMARGIN:
-    .word   56-1                    ; 50hz defaults
-BMARGIN:
-    .word   56-1
-
-
-setup:
-	call	seedrnd
-	ld		b,100					; give time for crappy LCD tvs to re-sync
-	jp	    waitframes
-
-
-aytrampoline:
-    push    de
-    push    iy
-irqsnd=$+1
-    call    _dummy
-    pop     iy
-    pop     de
-_dummy:
-    ret
-
-;;hexout:
-;;   push    af
-;;    rlca
-;;    rlca
-;;    rlca
-;;    rlca
-;;    call    _digitout
-;;    pop     af
-;;_digitout:
-;;    and     $0f
-;;    add     a,ZEROZ
-;;    ld      (de),a
-;;    inc     de
-;;    ret
