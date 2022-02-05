@@ -135,8 +135,9 @@ afxFrame1
 	sub		$20
 	jr		c,afxFrame2				;less than $ 20, play on
 	ld		h,a						;otherwise the end of the effect
+    ld      l,a
 	ld		b,$ff
-	ld		b,c						;in BC we record the longest time
+	ld		c,b						;in BC we record the longest time
 	jr		afxFrame6
 	
 afxFrame2
@@ -223,7 +224,6 @@ afxBnkAdr
 	push	hl						;save the effect address on the stack
 	
 	ld		hl,afxChDesc			;empty channel search
-;	ld		b,3
 	ld		b,2						; search 2 channels - force the third
 afxPlay0
 	inc		hl
@@ -244,7 +244,8 @@ afxPlay1
 	djnz		afxPlay0
 
 	pop		de						;take the effect address from the stack
-	ld		hl,(peet)
+peet=$+1
+	ld		hl,0
 	ld		(hl),b					;b is 0
 	dec		hl
 	ld		(hl),b
@@ -256,10 +257,6 @@ afxPlay1
 	pop     bc
 	pop     hl
 	ret
-
-peet:
-	.word	0
-
 
 AFXPLAYON3:
 	push    hl
