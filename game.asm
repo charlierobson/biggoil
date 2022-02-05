@@ -15,6 +15,8 @@ game:
 
 	call	initsfx
 
+    call    INPUT._setgame
+
 newlevel:
 	call	displaylevel
 	call	createmap
@@ -50,7 +52,7 @@ restart:
 
 mainloop:
 	call	framesync
-	call	readinput
+	call	INPUT._read
 
 	ld		a,(fire)				; if fire button has just been released then reset the retract tone
 	and		3

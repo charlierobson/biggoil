@@ -13,7 +13,7 @@ gameoverscn:
 
 _endloop:
 	call	framesync
-	call	readinput
+	call	INPUT._read
 
 	ld		a,(pl_current_position)
 	cp		18

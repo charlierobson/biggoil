@@ -59,6 +59,13 @@ line1:
 	call	seedrnd
 	call	installirq
 
+    ld      a,$1c
+    ld      (dfile+1),a
+    ld      a,$1e
+    ld      (dfile+2),a
+    ld      (dfile+3),a
+    ld      (dfile+4),a
+
 	ld		b,100					; give time for crappy LCD tvs to re-sync
 	call	waitframes
 

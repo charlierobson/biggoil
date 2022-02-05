@@ -3,6 +3,8 @@
 .module TSC
 
 titlescn:
+    call    INPUT._settitle
+
 	call	init_stc
 
 	ld		hl,0
@@ -45,7 +47,7 @@ _ilop:
 	djnz		_ilop
 
 _noflash:
-	call		readtitleinput
+	call		INPUT._read
 
 	ld		  a,(redef)				; redefine when r released
 	and		 3

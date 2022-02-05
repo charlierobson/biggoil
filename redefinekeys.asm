@@ -21,23 +21,18 @@ redefinekeys:
     ld      bc,16
     ldir
 
-	ld		de,up-2
-	ld		hl,REDEFDATA._upk
+	ld		hl,REDEFDATA._upk       ; input table index 0
 	call	_redeffit
 
-	ld		de,down-2
 	ld		hl,REDEFDATA._dnk
 	call	_redeffit
 
-	ld		de,left-2
 	ld		hl,REDEFDATA._lfk
 	call	_redeffit
 
-	ld		de,right-2
 	ld		hl,REDEFDATA._rtk
 	call	_redeffit
 	
-	ld		de,fire-2
 	ld		hl,REDEFDATA._frk
 	call	_redeffit
 
@@ -52,6 +47,15 @@ redefinekeys:
 
 
 _redeffit:
+    ld      a,(hl)                          ; input state array index
+    ld      (REDEFDATA._ipindex),a
+    inc     hl
+    sla     a
+    sla     a
+    ld      de,inputstates                  ; inputstates must not straddle a page
+    add     a,e
+    ld      e,a
+    inc     de
 	ld		(REDEFDATA._keyaddress),de		; the input data we're altering
 
 	ld		de,dfile+$306			; copy key text to screen
@@ -60,21 +64,19 @@ _redeffit:
 
 _redefloop:
 	call	framesync
-	call	inkbin
 	call	getcolbit
 	cp		$ff
 	jr		z,_redefloop
 
-	xor		$ff				 		; flip so we have a 1 bit where the key is
+	xor		$ff				 		; flip bits to create column mask
 
 	ld		hl,(REDEFDATA._keyaddress)
-	ld		(hl),c
+	ld		(hl),b
 	inc		hl
 	ld		(hl),a
 
 _redefnokey:
 	call	framesync
-	call	inkbin
 	call	getcolbit
 	cp		$ff
 	jr		nz,_redefnokey
@@ -84,15 +86,13 @@ _redefnokey:
 
 
 getcolbit:
-	ld		bc,$0800				; b is loop count, c is row index
-	ld		hl,INPUT._kbin
+    ld      bc,$fefe
 
--:	ld		a,(hl)					; byte will have a 0 bit if a key is pressed
+-:	in		a,(c)					; byte will have a 0 bit if a key is pressed
 	or		$e0
 	cp		$ff
 	ret		nz
-	inc		c
-	inc		hl
-	djnz	{-}
+    rlc     b
+    jr      c,{-}
 	ret
 

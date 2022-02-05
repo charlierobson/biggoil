@@ -60,30 +60,27 @@ winchanim:
 ; input state data:
 ;
 ; joystick bit, or $ff/%11111111 for no joy
-; key row offset 0-7,
+; key row IN address,
 ; key mask, or $ff/%11111111 for no key
 ; trigger impulse
 
-; !! KBIN CANNOT STRADDLE A PAGE BOUNDARY
-_kbin:
-	.fill	8
-
-_lastJ:
-	.byte	$ff
-
 titleinputstates:
-	.byte	%00001000,7,%00000001,0		; startgame	    (SP)
-	.byte	%11111111,2,%00001000,0		; redefine	    (R)
-	.byte	%11111111,5,%00000100,0		; instructions  (I)
-	.byte	%11111111,7,%11111111,0
-	.byte	%11111111,7,%11111111,0
+	.byte	%00001000,$7F,%00000001,0		; startgame	    (SP)
+	.byte	%11111111,$FB,%00001000,0		; redefine	    (R)
+	.byte	%11111111,$DF,%00000100,0		; instructions  (I)
+	.byte	%11111111,$FE,%11111111,0
+	.byte	%11111111,$FE,%11111111,0
 
+_inputstatespage=$&$ff00
 inputstates:
-	.byte	%00001000,7,%00000001,0		; fire	(SP)
-	.byte	%10000000,2,%00000001,0		; up    (Q)
-	.byte	%01000000,1,%00000001,0		; down	(A)
-	.byte	%00100000,5,%00000010,0		; left	(O)
-	.byte	%00010000,5,%00000001,0		; right	(P)
+	.byte	%10000000,$FB,%00000001,0		; up    (Q)
+	.byte	%01000000,$FD,%00000001,0		; down	(A)
+	.byte	%00100000,$DF,%00000010,0		; left	(O)
+	.byte	%00010000,$DF,%00000001,0		; right	(P)
+	.byte	%00001000,$7F,%00000001,0		; fire	(SP)
+.if _inputstatespage != $&$ff00
+.warn "inputstates must not straddle a page boundary!"
+.endif
 
 ; calculate actual input impulse addresses
 ;
@@ -91,11 +88,11 @@ begin	= titleinputstates + 3
 redef	= titleinputstates + 7
 instr	= titleinputstates + 11
 
-fire	= inputstates + 3
-up		= inputstates + 7
-down	= inputstates + 11
-left	= inputstates + 15
-right	= inputstates + 19
+up		= inputstates + 3
+down	= inputstates + 7
+left	= inputstates + 11
+right	= inputstates + 15
+fire	= inputstates + 19
     .endmodule ; ----------------- END MODULE ---------------
 
 
@@ -308,20 +305,28 @@ titlestc:
 _keyaddress:
 	.word	0
 
+_ipindex:
+	.byte	0
+
 _bit2byte:
 	.byte	1,2,4,8,16,0
 
 _pkf:
 	.asc	"press key for:"
 _upk:
+    .byte   0
 	.asc	" up  "
 _dnk:
+    .byte   1
 	.asc	"down "
 _lfk:
+    .byte   2
 	.asc	"left "
 _rtk:
+    .byte   3
 	.asc	"right"
 _frk:
+    .byte   4
 	.asc	"reel "
     .endmodule ; ----------------- END MODULE ---------------
 
@@ -386,19 +391,3 @@ waitframes:
 	call	framesync
 	djnz	waitframes
 	ret
-
-
-;;hexout:
-;;   push    af
-;;    rlca
-;;    rlca
-;;    rlca
-;;    rlca
-;;    call    _digitout
-;;    pop     af
-;;_digitout:
-;;    and     $0f
-;;    add     a,ZEROZ
-;;    ld      (de),a
-;;    inc     de
-;;    ret
