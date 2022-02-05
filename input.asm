@@ -49,30 +49,25 @@ _ri:
 updateinputstate:
 	ld		a,(hl)					; input info table
 	ld		(_uibittest),a			; get mask for j/s bit test
+	ld		a,(_lastJ)
+    ld      b,a
 
 	inc		hl
 	ld		a,(hl)					; half-row index
 	inc		hl
-	ld		de,_kbin				; keyboard bits table pointer - 8 byte aligned
-    add     a,e
+	ld		de,_kbin				; keyboard bits table pointer - must not straddle page boundary
+    add     a,e                     ; because we don't adjust MSB
     ld      e,a
-    jr      nc,{+}
-    inc     d
-+:	ld		a,(de)					; get key input bits
+	ld		a,(de)					; get key input bits
 	and		(hl)					; result will be a = 0 if required key is down
 	inc		hl
-	jr		z,{+}					; skip joystick read if pressed
+	jr		z,{+}					; skip joystick read if key detected
 
-	ld		a,(_lastJ)
-
-+:	sla		(hl)					; (key & 3) = 0 - not pressed, 1 - just pressed, 2 - just released and >3 - held
+    ld      a,b
 
 _uibittest = $+1
-	and		0						; if a key was already detected a will be 0 so this test succeeds
-	jr		nz,{+}					; otherwise joystick bit is tested - skip if bit = 1 (not pressed)
-
-	set		0,(hl)					; signify impulse
-
-+:	inc		hl						; ready for next input in table
++:	and		0						; self modifies: result is 0 if key detected or js & mask == 0
+    sub     1                       ; carry set if result was 0 ie direction detected, dec doesnt affect carry :()
+    rl      (hl)
+    inc		hl						; ready for next input in table
 	ret
-

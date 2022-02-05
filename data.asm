@@ -64,6 +64,7 @@ winchanim:
 ; key mask, or $ff/%11111111 for no key
 ; trigger impulse
 
+; !! KBIN CANNOT STRADDLE A PAGE BOUNDARY
 _kbin:
 	.fill	8
 
@@ -72,7 +73,7 @@ _lastJ:
 
 titleinputstates:
 	.byte	%00001000,7,%00000001,0		; startgame	    (SP)
-	.byte	%10000000,2,%00001000,0		; redefine	    (R)
+	.byte	%11111111,2,%00001000,0		; redefine	    (R)
 	.byte	%11111111,5,%00000100,0		; instructions  (I)
 	.byte	%11111111,7,%11111111,0
 	.byte	%11111111,7,%11111111,0
