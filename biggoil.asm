@@ -7,6 +7,8 @@
 	.exportmode NO$GMB
 	.export
 
+	.include	charmap.asm
+
 versn	.byte	$00
 e_ppc	.word	$0000
 d_file	.word	dfile
@@ -39,12 +41,24 @@ pr_cc	.byte	188
 s_posn	.byte	33 
 s_psn1	.byte	24 
 cdflag	.byte	64 
-PRTBUF	.fill	32,0
-prbend	.byte	$76 
-membot	.fill	32,0
+PRTBUF=$
+prbend=$+32
+membot=$+33
+
+    .module TSC
+_titletextlist:
+    .word    _tt3,_tt1,_tt2,_tt1
+_tt1:   
+	.asc	"  press <reel>  "
+_tt2:
+	.asc	"  r : redefine  "
+_tt3:
+	.asc	"i : instructions"
+    .endmodule
+
+    .fill 9,0
 
 
-	.include	charmap.asm
     .include    gamedefs.asm
 
 

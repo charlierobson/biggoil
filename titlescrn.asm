@@ -20,7 +20,6 @@ _titleredraw:
 _titleloop:
 	call	framesync
 
-
     ld      a,(frames)  ; AB------
     rlca                ; -------A
     rlca                ; ------AB

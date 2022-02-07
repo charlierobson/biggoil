@@ -24,3 +24,27 @@ irqsnd = $+1
 
 +:	ld		ix,relog
 	jp		$02a4
+
+
+
+framesync:
+	ld		hl,frames
+	ld		a,(hl)
+-:	cp		(hl)
+	jr		z,{-}
+
+ledsoff:
+    ld      a,$b7                       ; green off
+    call    ledctl
+    ld      a,$b9                       ; red off
+ledctl:
+    push    bc
+    ld      bc,$e007                    ; zxpand LED control
+    out     (c),a
+    pop     bc
+    ret
+
+waitframes:
+	call	framesync
+	djnz	waitframes
+	ret
