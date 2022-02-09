@@ -69,11 +69,45 @@ _redefloop:
 	jr		z,_redefloop
 
 	xor		$ff				 		; flip bits to create column mask
+    ld      c,a                     ; column mask in c, port num in b from getcolbit
 
+    ld      hl,inputstates+1
+    ld      de,(REDEFDATA._keyaddress)
+_testNext:
+    and     a
+    sbc     hl,de                   ; done when we are about to check the current input state
+    jr      z,_oktogo
+
+    add     hl,de                   ; otherwise check to see if port/mask combo is already used
+    ld      a,(hl)
+    inc     hl
+    cp      b
+    jr      nz,nomatchport
+
+    ld      a,(hl)
+    cp      c
+    jr      nz,nomatchport
+
+    ld      b,4                     ; combo already used, warn user
+-:  call    framesync
+    ld      e,b
+    call    invertscreen
+    ld      b,e
+    djnz    {-}
+    call    _redefnokey
+    jr      _redefloop
+
+nomatchport:
+    inc     hl
+    inc     hl
+    inc     hl
+    jr      _testNext
+
+_oktogo:
 	ld		hl,(REDEFDATA._keyaddress)
 	ld		(hl),b
 	inc		hl
-	ld		(hl),a
+	ld		(hl),c
 
 _redefnokey:
 	call	framesync
