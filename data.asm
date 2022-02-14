@@ -1,12 +1,13 @@
 
 
-	.align	128
+	.byte	0					; retract code requires a buffer byte before the queue
+	.align	256
 retractqueue:
 	.fill   128,$ff
 
 	.align	128
 entrances:
-	.fill	12*8,0          ; up to 10 entrances, 8 bytes apiece
+	.fill	12*8,0				; up to 10 entrances, 8 bytes apiece
 
 
 

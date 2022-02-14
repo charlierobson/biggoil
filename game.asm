@@ -43,6 +43,9 @@ restart:
 
 	ld		hl,retractqueue			; initialise the pipeline retract lifo
 	ld		(retractptr),hl
+	dec		hl
+	ld		a,DOWN
+	ld		(hl),a
 
 	xor		a
 	ld		(playerhit),a
