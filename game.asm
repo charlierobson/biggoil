@@ -8,6 +8,9 @@ game:
 	ld		a,4
 	ld		(lives),a
 
+	ld		a,DOWN                  ; to ensure retractqueue doesn't retract too far
+	ld		(retractqueue-1),a
+
 	call	displayscoreline
 
 	call	initsfx

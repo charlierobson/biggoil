@@ -44,12 +44,13 @@ _GENERATE_VSYNC:
 
 _GENERATE_DISPLAY:
 	LD		A,R							; Fine tune delay.
-
+_SCRLINES=$+2
 	LD		BC,$1901					; B=Row count (24 in main display + 1 for the border). C=Scan line counter for the border 'row'.
 	LD		A,$F5						; Timing constant to complete the current border line.
 	CALL	$02B5						; Complete the current border line and then generate the main display area.
 
-	LD		A,(margin)					; Fetch or specify the number of lines in the bottom border (does not have to be a multiple of 8).
+_GENERATE_BOTTOM_MARGIN:
+	LD		A,(bmargin)					; Fetch or specify the number of lines in the bottom border (does not have to be a multiple of 8).
 	NEG									; The value could be precalculated to avoid the need for the NEG and INC A here.
 	INC		A
 	EX		AF,AF'
@@ -63,6 +64,8 @@ irqsnd=$+1
 	LD		IX,_GENERATE_VSYNC			; Set the display routine pointer to generate the VSync pulse next.
 	JP		$02A4						; Return to the user program.
 
+bmargin:
+	.byte	55							; 50hz default
 
 framesync:
 	ld		hl,frames
