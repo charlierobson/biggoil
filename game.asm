@@ -199,7 +199,7 @@ dotimer:
 	ld		a,(timerv)
 	and		a
 	ret		z
-	dec		a
+	sub		1
 	daa
 	ld		(timerv),a
 _timerdd:

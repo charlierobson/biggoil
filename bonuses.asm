@@ -16,7 +16,7 @@ displayBonuses:
     pop     bc
 
     ld      a,c                 ; bonus number in c, bcd
-    inc     a
+    add		a,1					; inc/dec don't affect carry properly, needed for daa
     daa
     ld      c,a
 
@@ -86,7 +86,7 @@ _displayBonus:
 
     ld      a,(_bonus)
 
--:  dec     a
+-:  sub		1						; inc/dec don't affect carry properly, needed for daa
     daa
     push    af
     ld      de,dfile+$17b
