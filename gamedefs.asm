@@ -36,7 +36,7 @@ CLDSTART2 = 23
 CLDLEN2 = 10
 
 NENEMIES = 10
-ENEMYSIZE = 64
+ENEMYSIZE = 8
 
 EO_ENA = 0	; enemy enable 1 = active
 EO_ADL = 1	; screen address lo

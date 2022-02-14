@@ -3,28 +3,14 @@
 .module ENEMIES
 
 initialiseenemies:
-	ld		iy,$4000
-
 	ld		hl,enemydata
 	ld		de,enemydata+1
 	ld		bc,ENEMYSIZE*NENEMIES-1
 	ld		(hl),0
 	ldir
 
-    xor     a
-    ld      (BONUSES._eeaten),a
-
-	ld		a,(margin)
-	ld		b,NENEMIES
-	ld		hl,enemydata-5			; -3 because I use a cheat to offset to the MARGIN address
-
--:	ld		de,$28+5				; +3 takes into account addresses after the CDFlag
-	add		hl,de
-	ld		(hl),a					; MARGIN
-	ld		de,$3B-$28
-	add		hl,de
-	ld		(hl),$c0				; CDFLAG
-	djnz	{-}
+	xor		a
+	ld		(BONUSES._eeaten),a
 
 	ld		iy,enemydata
 	ret

@@ -1,5 +1,13 @@
 
 
+	.align	128
+retractqueue:
+	.fill   128,$ff
+
+	.align	128
+entrances:
+	.fill	12*8,0          ; up to 10 entrances, 8 bytes apiece
+
 
 
 
@@ -184,17 +192,7 @@ help:
 	.incbin instructions.binlz
 
 enemydata:
-	.fill   64*10,0         ; 10 enemies of 64 bytes each
-
-
-    .word 0 ; padding, needs to be here to guarantee a buffer
-	.align  256
-retractqueue:
-	.fill   128,$ff
-
-	.align	128
-entrances:
-	.fill	12*8,0          ; up to 10 entrances, 8 bytes apiece
+	.fill	ENEMYSIZE*NENEMIES,0
 
 scoreline:
 	.byte	$38, $28, $34, $37, $2a, $0e, $1c, $1c, $1c, $1c, $1c, $00, $2d, $2e, $0e, $1c, $1c, $1c, $1c, $1c, $00, $31, $3b, $31, $0e, $1d, $00, $32, $2a, $33, $0e, $20
@@ -268,16 +266,12 @@ titleinputstates:
 	.byte	%11111111,$FE,%11111111,0
 	.byte	%11111111,$FE,%11111111,0
 
-_inputstatespage=$&$ff00
 inputstates:
 	.byte	%10000000,$FB,%00000001,0		; up    (Q)
 	.byte	%01000000,$FD,%00000001,0		; down	(A)
 	.byte	%00100000,$DF,%00000010,0		; left	(O)
 	.byte	%00010000,$DF,%00000001,0		; right	(P)
 	.byte	%00001000,$7F,%00000001,0		; fire	(SP)
-.if _inputstatespage != $&$ff00
-.warn "inputstates must not straddle a page boundary!"
-.endif
 
 ; calculate actual input impulse addresses
 ;

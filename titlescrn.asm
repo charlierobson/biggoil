@@ -46,8 +46,6 @@ _ilop:
 	djnz		_ilop
 
 _noflash:
-	call		INPUT._read
-
 	ld		  a,(redef)				; redefine when r released
 	and		 3
 	cp		  2

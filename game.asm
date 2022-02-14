@@ -8,9 +8,6 @@ game:
 	ld		a,4
 	ld		(lives),a
 
-	ld		a,DOWN
-	ld		(retractqueue-1),a
-
 	call	displayscoreline
 
 	call	initsfx
@@ -52,7 +49,6 @@ restart:
 
 mainloop:
 	call	framesync
-	call	INPUT._read
 
 	ld		a,(fire)				; if fire button has just been released then reset the retract tone
 	and		3

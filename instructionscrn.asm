@@ -12,7 +12,6 @@ instructions:
 
 _helploop:
 	call	framesync
-	call    INPUT._read
     call    updatecloud
 
     ld      a,(frames)  ; AB------
